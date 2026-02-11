@@ -4,10 +4,9 @@
    ============================================ */
 
 // Initialize Supabase client (loaded from js/supabase-init.js)
-// Initialize Supabase client (loaded from js/supabase-init.js)
-const sbClient = window.sb;
+const supabase = window.sb;
 
-if (!sbClient) {
+if (!supabase) {
     console.error('🚨 Supabase client missing! Ensure supabase-init.js is loaded.');
 }
 
@@ -15,10 +14,10 @@ const API = {
     // ── Create a new delivery request ──
     createRequest: async (data) => {
         // Ensure user is authenticated for RLS
-        const { data: { session } } = await sbClient.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
         if (!session) throw new Error("You must be logged in to make a request.");
 
-        const { data: row, error } = await sbClient
+        const { data: row, error } = await supabase
             .from('requests')
             .insert([{
                 id: data.id,
@@ -42,7 +41,7 @@ const API = {
 
     // ── Accept a request (partner side) ──
     acceptRequest: async (id, partnerName) => {
-        const { error } = await sbClient
+        const { error } = await supabase
             .from('requests')
             .update({ status: 'ACCEPTED', partner_name: partnerName })
             .eq('id', id)
@@ -54,7 +53,7 @@ const API = {
 
     // ── Verify OTP → mark as delivered ──
     verifyOTP: async (id, otp) => {
-        const { data: row, error } = await sbClient
+        const { data: row, error } = await supabase
             .from('requests')
             .select('otp')
             .eq('id', id)
@@ -63,7 +62,7 @@ const API = {
         if (error) return { ok: false, error: 'Request not found' };
         if (String(row.otp) !== String(otp)) return { ok: false, error: 'Invalid OTP' };
 
-        const { error: updateErr } = await sbClient
+        const { error: updateErr } = await supabase
             .from('requests')
             .update({ status: 'DELIVERED' })
             .eq('id', id);
@@ -74,7 +73,7 @@ const API = {
 
     // ── Update request status ──
     updateStatus: async (id, status) => {
-        const { error } = await sbClient
+        const { error } = await supabase
             .from('requests')
             .update({ status })
             .eq('id', id);
@@ -92,7 +91,7 @@ const API = {
 
         // Fetch initial state
         (async () => {
-            const { data } = await sbClient
+            const { data } = await supabase
                 .from('requests')
                 .select('*')
                 .eq('id', id)
@@ -101,7 +100,7 @@ const API = {
         })();
 
         // Subscribe to realtime changes
-        const channel = sbClient
+        const channel = supabase
             .channel('req_' + id)
             .on('postgres_changes',
                 { event: 'UPDATE', schema: 'public', table: 'requests', filter: `id=eq.${id}` },
@@ -112,7 +111,7 @@ const API = {
         API._subscriptions['req_' + id] = channel;
 
         return () => {
-            sbClient.removeChannel(channel);
+            supabase.removeChannel(channel);
             delete API._subscriptions['req_' + id];
         };
     },
@@ -123,7 +122,7 @@ const API = {
 
         // Fetch initial list
         (async () => {
-            const { data } = await sbClient
+            const { data } = await supabase
                 .from('requests')
                 .select('*')
                 .eq('status', 'PENDING')
@@ -132,13 +131,13 @@ const API = {
         })();
 
         // Subscribe to realtime inserts and updates
-        const channel = sbClient
+        const channel = supabase
             .channel('pending_requests')
             .on('postgres_changes',
                 { event: '*', schema: 'public', table: 'requests' },
                 async () => {
                     // Re-fetch all pending on any change
-                    const { data } = await sbClient
+                    const { data } = await supabase
                         .from('requests')
                         .select('*')
                         .eq('status', 'PENDING')
@@ -151,20 +150,20 @@ const API = {
         API._subscriptions['pending'] = channel;
 
         return () => {
-            sbClient.removeChannel(channel);
+            supabase.removeChannel(channel);
             delete API._subscriptions['pending'];
         };
     },
 
     stopListener: (name) => {
         if (API._subscriptions[name]) {
-            sbClient.removeChannel(API._subscriptions[name]);
+            supabase.removeChannel(API._subscriptions[name]);
             delete API._subscriptions[name];
         }
     },
 
     stopAllListeners: () => {
-        Object.values(API._subscriptions).forEach(ch => sbClient.removeChannel(ch));
+        Object.values(API._subscriptions).forEach(ch => supabase.removeChannel(ch));
         API._subscriptions = {};
     }
 };
