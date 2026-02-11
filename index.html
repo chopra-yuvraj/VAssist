@@ -25,14 +25,30 @@
 <body>
 
     <!-- ═══════════════════════════════════════════
-         🚀 SPLASH SCREEN — Cinematic Entry
+         🚀 SPLASH SCREEN — Cinematic Entry with Logo & Cursor
          ═══════════════════════════════════════════ -->
     <div id="splash-screen">
+        <div class="splash-particles"></div>
         <div class="logo-container">
-            <div class="logo-circle"></div>
+            <!-- Logo Image Placeholder -->
+            <div class="logo-image-frame">
+                <div class="logo-image-placeholder">
+                    <span>⚡</span>
+                </div>
+                <div class="logo-ring-spin"></div>
+            </div>
+
             <h1>VAssist</h1>
             <p>From Store To Door!!!</p>
-            <div class="splash-loader"></div>
+
+            <!-- Centered Loading Cursor -->
+            <div class="splash-cursor-loader">
+                <div class="cursor-dot"></div>
+                <div class="cursor-ring"></div>
+                <div class="cursor-ring ring-2"></div>
+            </div>
+
+            <div class="splash-status">Connecting to campus network...</div>
         </div>
     </div>
 
@@ -188,6 +204,31 @@
 
         </main>
 
+        <!-- ═══════════════════════════════════════
+             🔐 OTP VERIFICATION MODAL
+             ═══════════════════════════════════════ -->
+        <div id="otp-modal" class="otp-modal-overlay">
+            <div class="otp-modal">
+                <button class="otp-modal-close" id="otp-close-btn">✕</button>
+                <div class="otp-modal-icon">🔐</div>
+                <h3>Enter Delivery OTP</h3>
+                <p>Ask the customer for their 4-digit OTP to confirm delivery</p>
+
+                <div class="otp-input-row">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                </div>
+
+                <div id="otp-error" class="otp-error"></div>
+
+                <button class="primary-btn otp-submit-btn" id="otp-verify-btn">
+                    Verify OTP <span class="arrow">→</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Toast Notification -->
         <div id="toast" class="toast">Message Here</div>
 
@@ -202,6 +243,7 @@
     <script src="js/config.js"></script>
     <script src="js/location.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/map.js"></script>
     <script src="js/app.js"></script>
 </body>

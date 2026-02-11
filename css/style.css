@@ -82,12 +82,12 @@ body {
 }
 
 /* ============================================
-   🚀 SPLASH SCREEN — Cinematic Entry
+   🚀 SPLASH SCREEN — Cinematic Entry with Cursor
    ============================================ */
 #splash-screen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 30%, #6C63FF 70%, #a855f7 100%);
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1040 25%, #2d1b69 50%, #6C63FF 80%, #a855f7 100%);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -100,105 +100,164 @@ body {
 
 #splash-screen.fade-out {
     opacity: 0;
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
-/* Splash Background Particles */
-#splash-screen::before {
-    content: '';
+/* Splash Particles */
+.splash-particles {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.3), transparent),
-        radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.2), transparent),
-        radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,0.3), transparent),
-        radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.2), transparent),
-        radial-gradient(2px 2px at 10% 90%, rgba(255,255,255,0.25), transparent),
-        radial-gradient(2px 2px at 70% 20%, rgba(255,255,255,0.15), transparent),
-        radial-gradient(2px 2px at 90% 50%, rgba(255,255,255,0.2), transparent),
-        radial-gradient(3px 3px at 50% 50%, rgba(255,255,255,0.1), transparent);
-    animation: sparkle-drift 6s linear infinite;
+        radial-gradient(2px 2px at 15% 25%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(2px 2px at 35% 65%, rgba(255,255,255,0.25), transparent),
+        radial-gradient(3px 3px at 55% 35%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(2px 2px at 10% 85%, rgba(168,85,247,0.4), transparent),
+        radial-gradient(2px 2px at 65% 15%, rgba(108,99,255,0.35), transparent),
+        radial-gradient(2px 2px at 85% 45%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(3px 3px at 45% 55%, rgba(236,72,153,0.2), transparent);
+    animation: sparkle-drift 8s ease-in-out infinite;
 }
 
 .logo-container {
     text-align: center;
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.logo-circle {
-    width: 80px;
-    height: 80px;
-    border: 3px solid rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-    margin: 0 auto 24px;
+/* Logo Image Frame (Placeholder) */
+.logo-image-frame {
     position: relative;
-    animation: logo-pulse 2s ease-in-out infinite;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 28px;
+}
+
+.logo-image-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(108,99,255,0.3), rgba(168,85,247,0.3));
+    border: 3px solid rgba(255,255,255,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 40px rgba(108,99,255,0.3), inset 0 0 30px rgba(108,99,255,0.15);
+    animation: logo-pulse 2.5s ease-in-out infinite;
+    overflow: hidden;
 }
 
-.logo-circle::before {
-    content: '⚡';
-    font-size: 2rem;
+.logo-image-placeholder span {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
     animation: logo-icon-float 3s ease-in-out infinite;
 }
 
-.logo-circle::after {
-    content: '';
+.logo-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Spinning ring around logo */
+.logo-ring-spin {
     position: absolute;
     inset: -8px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    animation: logo-ring-expand 2s ease-in-out infinite 0.5s;
+    border: 2px solid transparent;
+    border-top-color: rgba(255,255,255,0.6);
+    border-right-color: rgba(168,85,247,0.4);
+    animation: spin 2.5s linear infinite;
+    z-index: 1;
+}
+
+.logo-ring-spin::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    border-bottom-color: rgba(108,99,255,0.4);
+    border-left-color: rgba(236,72,153,0.3);
+    animation: spin 3.5s linear infinite reverse;
 }
 
 .logo-container h1 {
-    font-size: 2.4rem;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: 3px;
     margin-bottom: 8px;
     opacity: 0;
-    animation: splash-text-reveal 0.8s var(--ease-out-expo) 0.4s forwards;
     background: linear-gradient(to right, #fff, #e0d4ff, #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     background-size: 200% auto;
-    animation: splash-text-reveal 0.8s var(--ease-out-expo) 0.4s forwards,
-               shimmer-text 3s linear infinite 1.2s;
+    animation: splash-text-reveal 0.8s var(--ease-out-expo) 0.3s forwards,
+               shimmer-text 3s linear infinite 1s;
 }
 
 .logo-container p {
-    font-size: 0.95rem;
-    letter-spacing: 4px;
+    font-size: 0.9rem;
+    letter-spacing: 5px;
     text-transform: uppercase;
     opacity: 0;
-    animation: splash-text-reveal 0.8s var(--ease-out-expo) 0.7s forwards;
-    color: rgba(255, 255, 255, 0.7);
+    animation: splash-text-reveal 0.8s var(--ease-out-expo) 0.6s forwards;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 300;
 }
 
-/* Splash Loading Bar */
-.splash-loader {
-    width: 120px;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+/* ── Centered Loading Cursor ── */
+.splash-cursor-loader {
+    position: relative;
+    width: 50px;
+    height: 50px;
     margin-top: 40px;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
-    animation: splash-text-reveal 0.5s var(--ease-out-expo) 1s forwards;
+    animation: splash-text-reveal 0.5s var(--ease-out-expo) 0.9s forwards;
 }
 
-.splash-loader::after {
-    content: '';
-    display: block;
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, white, transparent);
-    border-radius: 10px;
-    animation: splash-load-bar 1.8s var(--ease-smooth) 1.2s forwards;
+.cursor-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 15px rgba(255,255,255,0.6), 0 0 30px rgba(108,99,255,0.4);
+    animation: cursor-pulse 1.5s ease-in-out infinite;
+    z-index: 2;
+}
+
+.cursor-ring {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.4);
+    animation: cursor-ring-expand 2s ease-out infinite;
+}
+
+.cursor-ring.ring-2 {
+    animation: cursor-ring-expand 2s ease-out infinite 0.8s;
+}
+
+.splash-status {
+    margin-top: 20px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: splash-text-reveal 0.5s var(--ease-out-expo) 1.2s forwards,
+               fade-pulse 2.5s ease-in-out infinite 1.7s;
+    text-transform: uppercase;
 }
 
 /* ============================================
@@ -1343,6 +1402,223 @@ input:focus + .slider {
 }
 
 /* ============================================
+   🔐 OTP VERIFICATION MODAL
+   ============================================ */
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-smooth);
+    padding: 20px;
+}
+
+.otp-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.otp-modal {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    padding: 36px 28px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.4s var(--ease-spring);
+    position: relative;
+}
+
+.otp-modal-overlay.show .otp-modal {
+    transform: scale(1) translateY(0);
+}
+
+.otp-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0,0,0,0.06);
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    color: var(--text-muted);
+}
+
+.otp-modal-close:hover {
+    background: rgba(255,71,87,0.1);
+    color: var(--accent-red);
+    transform: rotate(90deg);
+}
+
+.otp-modal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+.otp-modal h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.otp-modal > p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+}
+
+.otp-input-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.otp-digit {
+    width: 56px;
+    height: 64px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-family: var(--font-main);
+    border: 2px solid rgba(0,0,0,0.1);
+    border-radius: var(--radius-md);
+    outline: none;
+    color: var(--primary);
+    background: var(--surface-hover);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    caret-color: var(--primary);
+}
+
+.otp-digit:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.otp-error {
+    color: var(--accent-red);
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-height: 22px;
+    margin-bottom: 12px;
+}
+
+.otp-submit-btn {
+    margin-top: 8px;
+}
+
+/* ============================================
+   🎒 PARTNER ACTION BUTTONS
+   ============================================ */
+.accepted-order-card {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 22px;
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--accent-green);
+}
+
+.accepted-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-bottom: 8px;
+}
+
+.accepted-order-card > p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+}
+
+.partner-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-spring);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.action-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+}
+
+.action-btn:not(:disabled):active {
+    transform: scale(0.98);
+}
+
+.picked-up-btn {
+    background: linear-gradient(135deg, #FFA502, #FF6348);
+    color: white;
+    box-shadow: 0 4px 16px rgba(255,165,2,0.3);
+}
+
+.deliver-btn {
+    background: linear-gradient(135deg, #18DCFF, #6C63FF);
+    color: white;
+    box-shadow: 0 4px 16px rgba(24,220,255,0.3);
+}
+
+.complete-btn {
+    background: linear-gradient(135deg, #2ED573, #27ae60);
+    color: white;
+    box-shadow: 0 4px 16px rgba(46,213,115,0.3);
+}
+
+.action-btn.done {
+    background: rgba(0,0,0,0.06);
+    color: var(--text-muted);
+    box-shadow: none;
+}
+
+.req-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
    🎬 KEYFRAME ANIMATIONS
    ============================================ */
 
@@ -1549,6 +1825,17 @@ input:focus + .slider {
     0% { box-shadow: 0 0 5px var(--primary-glow); }
     50% { box-shadow: 0 0 25px var(--primary-glow), 0 0 50px rgba(108, 99, 255, 0.15); }
     100% { box-shadow: 0 0 5px var(--primary-glow); }
+}
+
+/* Cursor Loader */
+@keyframes cursor-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,255,255,0.6), 0 0 30px rgba(108,99,255,0.4); }
+    50% { transform: scale(1.3); box-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(108,99,255,0.6); }
+}
+
+@keyframes cursor-ring-expand {
+    0% { transform: scale(0.5); opacity: 1; border-color: rgba(255,255,255,0.6); }
+    100% { transform: scale(2.5); opacity: 0; border-color: rgba(108,99,255,0.1); }
 }
 
 /* ============================================
