@@ -1,5 +1,15 @@
+/* ============================================
+   VAssist — Configuration TEMPLATE
+   ============================================
+   This file uses placeholders. On Render, build.sh
+   generates the real config.js from environment variables.
+   For local development, copy config.example.js to config.js
+   and fill in your Supabase credentials.
+   ============================================ */
 const CONFIG = {
-    // 🎯 Center of VIT Vellore
+    SUPABASE_URL: 'YOUR_SUPABASE_URL',
+    SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
+
     VIT_CENTER: [12.9716, 79.1594],
 
     API: {
@@ -17,10 +27,9 @@ const CONFIG = {
         SETTINGS: 'vassist_settings'
     },
 
-    // App metadata
     APP: {
         NAME: 'VAssist',
-        VERSION: '3.0.0',
+        VERSION: '4.0.0',
         AUTHOR: 'Yuvraj Chopra'
     }
 };
