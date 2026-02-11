@@ -467,10 +467,11 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/supabase-init.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const ALLOWED_DOMAIN = '@vitstudent.ac.in';
-            const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+            const sb = window.sb;
 
             // Already logged in? Go to app
             const saved = localStorage.getItem('vassist_user');

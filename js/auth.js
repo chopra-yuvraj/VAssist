@@ -15,7 +15,7 @@
     async function logout() {
         localStorage.removeItem('vassist_user');
         try {
-            await supabase.auth.signOut();
+            await window.sb.auth.signOut();
         } catch (e) { /* ignore */ }
         window.location.href = 'login.html';
     }
@@ -65,6 +65,39 @@
         updateProfileUI();
         addFloatingOrbs();
         addAuroraBackground();
+
+        // ── Auth Persistence Listener ──
+        // Keeps localStorage in sync with actual Supabase session
+        if (window.sb) {
+            window.sb.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session) {
+                    const user = session.user;
+                    localStorage.setItem('vassist_user', JSON.stringify({
+                        uid: user.id || user.uid,
+                        email: user.email,
+                        name: user.user_metadata?.full_name || user.email.split('@')[0],
+                        photoURL: user.user_metadata?.avatar_url || null
+                    }));
+                    updateProfileUI();
+                } else if (event === 'SIGNED_OUT') {
+                    localStorage.removeItem('vassist_user');
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Check session on load
+            /* 
+               If we have no session but have vassist_user, it means session expired/cleared.
+               We should clear vassist_user to avoid UI mismatch.
+            */
+            window.sb.auth.getSession().then(({ data: { session } }) => {
+                if (!session && localStorage.getItem('vassist_user')) {
+                    console.log('Session expired, clearing local state');
+                    localStorage.removeItem('vassist_user');
+                    updateProfileUI();
+                }
+            });
+        }
     }
 
     if (document.readyState === 'loading') {

@@ -7,8 +7,8 @@
    and fill in your Supabase credentials.
    ============================================ */
 const CONFIG = {
-    SUPABASE_URL: 'YOUR_SUPABASE_URL',
-    SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
+    SUPABASE_URL: 'SUPABASE_URL',
+    SUPABASE_ANON_KEY: 'SUPABASE_ANON_KEY',
 
     VIT_CENTER: [12.9716, 79.1594],
 

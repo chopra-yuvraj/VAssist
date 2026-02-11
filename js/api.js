@@ -3,13 +3,11 @@
    All database operations via Supabase JS SDK
    ============================================ */
 
-// Initialize Supabase client (loaded from CDN in HTML)
-let supabase;
-try {
-    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-    console.log('✅ Supabase connected');
-} catch (e) {
-    console.warn('⚠️ Supabase SDK not loaded — check your internet or config.js credentials', e);
+// Initialize Supabase client (loaded from js/supabase-init.js)
+const supabase = window.sb;
+
+if (!supabase) {
+    console.error('🚨 Supabase client missing! Ensure supabase-init.js is loaded.');
 }
 
 const API = {
