@@ -161,9 +161,16 @@ const Utils = {
     },
 
     // ── Time Ago (for partner dashboard) ──
-    timeAgo: (dateStr) => {
+    timeAgo: (val) => {
         const now = Date.now();
-        const then = new Date(dateStr).getTime();
+        let then;
+        if (val && typeof val.toDate === 'function') {
+            then = val.toDate().getTime(); // Firestore Timestamp
+        } else if (typeof val === 'number') {
+            then = val; // milliseconds
+        } else {
+            then = new Date(val).getTime(); // date string
+        }
         const diff = Math.max(0, now - then);
         const mins = Math.floor(diff / 60000);
         if (mins < 1) return 'Just now';
