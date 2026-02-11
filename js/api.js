@@ -4,9 +4,9 @@
    ============================================ */
 
 // Initialize Supabase client (loaded from js/supabase-init.js)
-const supabase = window.sb;
+const db = window.sb;
 
-if (!supabase) {
+if (!db) {
     console.error('🚨 Supabase client missing! Ensure supabase-init.js is loaded.');
 }
 
@@ -14,10 +14,10 @@ const API = {
     // ── Create a new delivery request ──
     createRequest: async (data) => {
         // Ensure user is authenticated for RLS
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await db.auth.getSession();
         if (!session) throw new Error("You must be logged in to make a request.");
 
-        const { data: row, error } = await supabase
+        const { data: row, error } = await db
             .from('requests')
             .insert([{
                 id: data.id,
@@ -41,7 +41,7 @@ const API = {
 
     // ── Accept a request (partner side) ──
     acceptRequest: async (id, partnerName) => {
-        const { error } = await supabase
+        const { error } = await db
             .from('requests')
             .update({ status: 'ACCEPTED', partner_name: partnerName })
             .eq('id', id)
@@ -53,7 +53,7 @@ const API = {
 
     // ── Verify OTP → mark as delivered ──
     verifyOTP: async (id, otp) => {
-        const { data: row, error } = await supabase
+        const { data: row, error } = await db
             .from('requests')
             .select('otp')
             .eq('id', id)
@@ -62,7 +62,7 @@ const API = {
         if (error) return { ok: false, error: 'Request not found' };
         if (String(row.otp) !== String(otp)) return { ok: false, error: 'Invalid OTP' };
 
-        const { error: updateErr } = await supabase
+        const { error: updateErr } = await db
             .from('requests')
             .update({ status: 'DELIVERED' })
             .eq('id', id);
@@ -73,7 +73,7 @@ const API = {
 
     // ── Update request status ──
     updateStatus: async (id, status) => {
-        const { error } = await supabase
+        const { error } = await db
             .from('requests')
             .update({ status })
             .eq('id', id);
@@ -91,7 +91,7 @@ const API = {
 
         // Fetch initial state
         (async () => {
-            const { data } = await supabase
+            const { data } = await db
                 .from('requests')
                 .select('*')
                 .eq('id', id)
@@ -100,7 +100,7 @@ const API = {
         })();
 
         // Subscribe to realtime changes
-        const channel = supabase
+        const channel = db
             .channel('req_' + id)
             .on('postgres_changes',
                 { event: 'UPDATE', schema: 'public', table: 'requests', filter: `id=eq.${id}` },
@@ -111,7 +111,7 @@ const API = {
         API._subscriptions['req_' + id] = channel;
 
         return () => {
-            supabase.removeChannel(channel);
+            db.removeChannel(channel);
             delete API._subscriptions['req_' + id];
         };
     },
@@ -122,7 +122,7 @@ const API = {
 
         // Fetch initial list
         (async () => {
-            const { data } = await supabase
+            const { data } = await db
                 .from('requests')
                 .select('*')
                 .eq('status', 'PENDING')
@@ -131,13 +131,13 @@ const API = {
         })();
 
         // Subscribe to realtime inserts and updates
-        const channel = supabase
+        const channel = db
             .channel('pending_requests')
             .on('postgres_changes',
                 { event: '*', schema: 'public', table: 'requests' },
                 async () => {
                     // Re-fetch all pending on any change
-                    const { data } = await supabase
+                    const { data } = await db
                         .from('requests')
                         .select('*')
                         .eq('status', 'PENDING')
@@ -150,20 +150,20 @@ const API = {
         API._subscriptions['pending'] = channel;
 
         return () => {
-            supabase.removeChannel(channel);
+            db.removeChannel(channel);
             delete API._subscriptions['pending'];
         };
     },
 
     stopListener: (name) => {
         if (API._subscriptions[name]) {
-            supabase.removeChannel(API._subscriptions[name]);
+            db.removeChannel(API._subscriptions[name]);
             delete API._subscriptions[name];
         }
     },
 
     stopAllListeners: () => {
-        Object.values(API._subscriptions).forEach(ch => supabase.removeChannel(ch));
+        Object.values(API._subscriptions).forEach(ch => db.removeChannel(ch));
         API._subscriptions = {};
     }
 };
