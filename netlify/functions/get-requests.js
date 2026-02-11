@@ -1,8 +1,8 @@
-import { neon } from '@netlify/neon';
+import { neon } from '@neondatabase/serverless';
 
 export default async (req) => {
     try {
-        const sql = neon();
+        const sql = neon(process.env.DATABASE_URL);
         const url = new URL(req.url);
         const id = url.searchParams.get('id');
         const status = url.searchParams.get('status');

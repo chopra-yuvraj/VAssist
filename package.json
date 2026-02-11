@@ -2,9 +2,10 @@
   "name": "vassist",
   "version": "3.0.0",
   "description": "VAssist — Campus Delivery Platform with real-time multi-device support",
+  "type": "module",
   "author": "Yuvraj Chopra",
   "license": "MIT",
   "dependencies": {
-    "@netlify/neon": "^0.1.0"
+    "@neondatabase/serverless": "^0.10.4"
   }
 }

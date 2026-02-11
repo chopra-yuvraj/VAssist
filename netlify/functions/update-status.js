@@ -1,4 +1,4 @@
-import { neon } from '@netlify/neon';
+import { neon } from '@neondatabase/serverless';
 
 export default async (req) => {
     if (req.method !== 'POST') {
@@ -6,7 +6,7 @@ export default async (req) => {
     }
 
     try {
-        const sql = neon();
+        const sql = neon(process.env.DATABASE_URL);
         const { id, status } = await req.json();
 
         if (!id || !status) {
