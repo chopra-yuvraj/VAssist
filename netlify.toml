@@ -1,5 +1,6 @@
 [build]
   publish = "."
+  command = "bash scripts/generate-config.sh"
 
 [build.processing]
   skip_processing = false

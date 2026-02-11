@@ -1,16 +1,17 @@
 /* ============================================
-   VAssist — Firebase Realtime DB API Service
-   True real-time sync — no polling needed!
+   VAssist — Firestore API Service
+   Real-time sync via onSnapshot listeners
    ============================================ */
 
 const API = {
+    // ── Create a new delivery request ──
     createRequest: async (data) => {
         try {
-            await db.ref('requests/' + data.id).set({
+            await db.collection('requests').doc(data.id).set({
                 ...data,
                 status: 'PENDING',
-                created_at: firebase.database.ServerValue.TIMESTAMP,
-                updated_at: firebase.database.ServerValue.TIMESTAMP
+                created_at: firebase.firestore.FieldValue.serverTimestamp(),
+                updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             return { success: true, id: data.id };
         } catch (err) {
@@ -19,14 +20,17 @@ const API = {
         }
     },
 
+    // ── Accept a request (partner side) ──
     acceptRequest: async (id, partnerName) => {
         try {
-            const snap = await db.ref('requests/' + id + '/status').once('value');
-            if (snap.val() !== 'PENDING') throw new Error('Already accepted');
-            await db.ref('requests/' + id).update({
+            const doc = await db.collection('requests').doc(id).get();
+            if (!doc.exists || doc.data().status !== 'PENDING') {
+                throw new Error('Already accepted');
+            }
+            await db.collection('requests').doc(id).update({
                 status: 'ACCEPTED',
                 partner_name: partnerName,
-                updated_at: firebase.database.ServerValue.TIMESTAMP
+                updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             return { success: true };
         } catch (err) {
@@ -35,16 +39,17 @@ const API = {
         }
     },
 
+    // ── Verify OTP → mark as delivered ──
     verifyOTP: async (id, otp) => {
         try {
-            const snap = await db.ref('requests/' + id).once('value');
-            const req = snap.val();
-            if (!req) return { ok: false, error: 'Not found' };
+            const doc = await db.collection('requests').doc(id).get();
+            if (!doc.exists) return { ok: false, error: 'Not found' };
+            const req = doc.data();
             if (req.status === 'DELIVERED') return { ok: false, error: 'Already delivered' };
             if (String(req.otp) !== String(otp)) return { ok: false, success: false, error: 'Invalid OTP' };
-            await db.ref('requests/' + id).update({
+            await db.collection('requests').doc(id).update({
                 status: 'DELIVERED',
-                updated_at: firebase.database.ServerValue.TIMESTAMP
+                updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             return { ok: true, success: true };
         } catch (err) {
@@ -53,11 +58,12 @@ const API = {
         }
     },
 
+    // ── Update request status ──
     updateStatus: async (id, status) => {
         try {
-            await db.ref('requests/' + id).update({
+            await db.collection('requests').doc(id).update({
                 status,
-                updated_at: firebase.database.ServerValue.TIMESTAMP
+                updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             return { success: true };
         } catch (err) {
@@ -66,36 +72,40 @@ const API = {
         }
     },
 
-    // ═══ REAL-TIME LISTENERS ═══
-    _listeners: {},
+    // ═══ REAL-TIME LISTENERS (Firestore onSnapshot) ═══
+    _unsubs: {},
 
+    // Listen for a specific request (user tracking their order)
     onRequestUpdate: (id, callback) => {
         API.stopListener('req_' + id);
-        const ref = db.ref('requests/' + id);
-        ref.on('value', snap => callback(snap.val()));
-        API._listeners['req_' + id] = ref;
-        return () => { ref.off(); delete API._listeners['req_' + id]; };
+        const unsub = db.collection('requests').doc(id).onSnapshot((doc) => {
+            callback(doc.exists ? { id: doc.id, ...doc.data() } : null);
+        });
+        API._unsubs['req_' + id] = unsub;
+        return () => { unsub(); delete API._unsubs['req_' + id]; };
     },
 
+    // Listen for all pending requests (partner dashboard)
     onPendingRequests: (callback) => {
         API.stopListener('pending');
-        const ref = db.ref('requests').orderByChild('status').equalTo('PENDING');
-        ref.on('value', snap => {
-            const arr = [];
-            snap.forEach(c => arr.push(c.val()));
-            arr.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
-            callback(arr);
-        });
-        API._listeners['pending'] = ref;
-        return () => { ref.off(); delete API._listeners['pending']; };
+        const unsub = db.collection('requests')
+            .where('status', '==', 'PENDING')
+            .orderBy('created_at', 'desc')
+            .onSnapshot((snapshot) => {
+                const requests = [];
+                snapshot.forEach(doc => requests.push({ id: doc.id, ...doc.data() }));
+                callback(requests);
+            });
+        API._unsubs['pending'] = unsub;
+        return () => { unsub(); delete API._unsubs['pending']; };
     },
 
     stopListener: (name) => {
-        if (API._listeners[name]) { API._listeners[name].off(); delete API._listeners[name]; }
+        if (API._unsubs[name]) { API._unsubs[name](); delete API._unsubs[name]; }
     },
 
     stopAllListeners: () => {
-        Object.keys(API._listeners).forEach(n => { if (API._listeners[n]) API._listeners[n].off(); });
-        API._listeners = {};
+        Object.values(API._unsubs).forEach(unsub => unsub());
+        API._unsubs = {};
     }
 };
