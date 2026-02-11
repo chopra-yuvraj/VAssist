@@ -1,11 +1,7 @@
 {
   "name": "vassist",
   "version": "3.0.0",
-  "description": "VAssist — Campus Delivery Platform with real-time multi-device support",
-  "type": "module",
+  "description": "VAssist — Campus Delivery Platform with Firebase real-time backend",
   "author": "Yuvraj Chopra",
-  "license": "MIT",
-  "dependencies": {
-    "@neondatabase/serverless": "^0.10.4"
-  }
+  "license": "MIT"
 }

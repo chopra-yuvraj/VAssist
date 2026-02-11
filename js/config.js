@@ -17,9 +17,6 @@ const CONFIG = {
         SETTINGS: 'vassist_settings'
     },
 
-    // Polling interval for multi-device sync (ms)
-    POLLING_INTERVAL: 3000,
-
     // App metadata
     APP: {
         NAME: 'VAssist',

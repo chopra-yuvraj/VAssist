@@ -1,6 +1,6 @@
 /* ============================================
    VAssist — Main Application Controller
-   v3.0 — Multi-Device with Netlify DB Backend
+   v3.0 — Firebase Realtime DB Backend
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -232,8 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 Utils.showToast("📡 Request Broadcasted to Campus!");
 
-                // Start polling for status updates (user side)
-                startUserPolling(activeRequestId);
+                // Start real-time tracking (Firebase listener)
+                startUserTracking(activeRequestId);
 
             } catch (err) {
                 Utils.showToast("⚠️ Failed to send request. Please try again.");
@@ -245,21 +245,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // ==========================================
-        // 📡 USER POLLING — Track My Request
+        // 📡 USER TRACKING — Firebase Real-Time
         // ==========================================
 
-        function startUserPolling(requestId) {
+        let unsubUserTracking = null;
+
+        function startUserTracking(requestId) {
+            stopUserTracking();
             let lastStatus = 'PENDING';
 
-            API.startPolling('user-tracking', () => API.getMyRequest(requestId), (req) => {
+            unsubUserTracking = API.onRequestUpdate(requestId, (req) => {
                 if (!req) return;
-
-                // Status changed
                 if (req.status !== lastStatus) {
                     lastStatus = req.status;
                     handleUserStatusUpdate(req);
                 }
-            }, CONFIG.POLLING_INTERVAL);
+            });
+        }
+
+        function stopUserTracking() {
+            if (unsubUserTracking) { unsubUserTracking(); unsubUserTracking = null; }
         }
 
         function handleUserStatusUpdate(req) {
@@ -280,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Utils.showToast("🎉 Order Delivered!");
                 Utils.launchConfetti(50);
                 Utils.vibrate([100, 50, 100, 50, 200]);
-                API.stopPolling('user-tracking');
+                stopUserTracking();
 
                 // Clear active request
                 localStorage.removeItem('vassist_active_req_id');
@@ -352,16 +357,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // ==========================================
 
         let acceptedRequestId = null;
+        let unsubPartnerRequests = null;
 
-        function startPartnerPolling() {
-            API.startPolling('partner-requests', () => API.getRequests('PENDING'), (requests) => {
+        function startPartnerListening() {
+            stopPartnerListening();
+            unsubPartnerRequests = API.onPendingRequests((requests) => {
                 renderPartnerRequests(requests);
-            }, CONFIG.POLLING_INTERVAL);
+            });
         }
 
-        function stopPartnerPolling() {
-            API.stopPolling('partner-requests');
-            API.stopPolling('partner-accepted');
+        function stopPartnerListening() {
+            if (unsubPartnerRequests) { unsubPartnerRequests(); unsubPartnerRequests = null; }
         }
 
         function renderPartnerRequests(requests) {
@@ -598,8 +604,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     partnerUI.style.animation = 'slide-in-right 0.4s var(--ease-spring) both';
                 }, 350);
 
-                // Start polling for partner requests
-                startPartnerPolling();
+                // Start real-time listener for partner requests
+                startPartnerListening();
                 Utils.showToast("🎒 Switched to Partner Mode");
 
             } else {
@@ -619,8 +625,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     userUI.style.animation = 'slide-in-left 0.4s var(--ease-spring) both';
                 }, 350);
 
-                // Stop partner polling
-                stopPartnerPolling();
+                // Stop partner listener
+                stopPartnerListening();
                 acceptedRequestId = null;
 
                 Utils.showToast("👤 Switched to User Mode");
@@ -633,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeRequestId) {
             // User had an active request, resume tracking
             UI.showPanel('track');
-            startUserPolling(activeRequestId);
+            startUserTracking(activeRequestId);
             Utils.showToast("📡 Resuming order tracking...");
         }
 

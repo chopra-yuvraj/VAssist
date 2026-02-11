@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VAssist | Campus Delivery — Fast, Smart, Student-Powered</title>
-    <meta name="description" content="VAssist is the ultimate campus delivery platform for VIT. Get food, stationery, and more delivered by fellow students. Fast, affordable, reliable.">
+    <meta name="description"
+        content="VAssist is the ultimate campus delivery platform for VIT. Get food, stationery, and more delivered by fellow students. Fast, affordable, reliable.">
     <meta name="theme-color" content="#6C63FF">
     <meta property="og:title" content="VAssist — Campus Delivery Network">
     <meta property="og:description" content="Fast campus deliveries powered by students at VIT Vellore.">
@@ -18,10 +21,12 @@
     <link rel="preconnect" href="https://unpkg.com">
 
     <!-- Fonts & Leaflet -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <!-- ═══════════════════════════════════════════
@@ -56,11 +61,11 @@
          📱 MAIN APP
          ═══════════════════════════════════════════ -->
     <div class="app-container">
-        
+
         <!-- Glass Header -->
         <header class="glass-header" id="app-header">
             <div class="brand">⚡ VAssist</div>
-            
+
             <div class="mode-switch-container">
                 <span class="mode-label" id="label-user">User</span>
                 <label class="switch no-select">
@@ -81,15 +86,16 @@
              👤 USER UI
              ═══════════════════════════════════════ -->
         <main id="user-ui" class="ui-layer">
-            
+
             <!-- Panel 1: Request -->
             <section id="request-panel" class="panel active">
                 <div class="panel-handle"></div>
                 <h2>Need something?</h2>
-                
+
                 <div class="input-wrapper">
                     <span class="icon">📦</span>
-                    <input type="text" id="item-input" placeholder="E.g., Bluebook, Coffee, Charger..." autocomplete="off">
+                    <input type="text" id="item-input" placeholder="E.g., Bluebook, Coffee, Charger..."
+                        autocomplete="off">
                 </div>
 
                 <div class="location-box">
@@ -187,7 +193,7 @@
              🎒 PARTNER UI
              ═══════════════════════════════════════ -->
         <main id="partner-ui" class="ui-layer hidden-mode">
-            
+
             <div class="partner-dashboard">
                 <div class="dash-header">
                     <h3>🔴 Live Requests</h3>
@@ -215,10 +221,14 @@
                 <p>Ask the customer for their 4-digit OTP to confirm delivery</p>
 
                 <div class="otp-input-row">
-                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric"
+                        autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric"
+                        autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric"
+                        autocomplete="off">
+                    <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric"
+                        autocomplete="off">
                 </div>
 
                 <div id="otp-error" class="otp-error"></div>
@@ -240,11 +250,16 @@
          📜 SCRIPTS
          ═══════════════════════════════════════════ -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Firebase SDK (Realtime Database) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="js/config.js"></script>
     <script src="js/location.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/firebase-config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/map.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>
