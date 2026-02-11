@@ -17,6 +17,7 @@ const CAMPUS_DATA = [
     { name: "Gandhi Block (Architecture Block)", lat: 12.97216, lng: 79.16787, type: "academic" },
     { name: "Balaji Store", lat: 12.97123, lng: 79.16025, type: "academic" },
     { name: "VIT Madras Coffee House", lat: 12.97250, lng: 79.16720, type: "academic" },
+    { name: "DC Canteen", lat: 12.97008, lng: 79.15885, type: "academic" },
 
     // 🏠 MEN'S HOSTELS
     { name: "A Block MH", lat: 12.97325, lng: 79.15731, type: "hostel" },
@@ -36,10 +37,10 @@ const CAMPUS_DATA = [
     { name: "N Block MH", lat: 12.97511, lng: 79.16409, type: "hostel" },
     { name: "P Block MH", lat: 12.97400, lng: 79.16432, type: "hostel" },
     { name: "Q Block MH", lat: 12.97412, lng: 79.16351, type: "hostel" },
-    { name: "R Block MH", lat: 12.97414, lng: 79.14363, type: "hostel" },
+    { name: "R Block MH", lat: 12.97341, lng: 79.16363, type: "hostel" },
     { name: "S Block MH", lat: 12.97421, lng: 79.16566, type: "hostel" },
     { name: "T Block MH", lat: 12.97509, lng: 79.16465, type: "hostel" },
-    { name: "M Annex MH", lat: 12.97428, lng: 79.16469, type: "hostel" },
+    { name: "M Annex MH", lat: 12.97284, lng: 79.16469, type: "hostel" },
     { name: "N Annex", lat: 12.97557, lng: 79.16443, type: "hostel" },
 
     // 🏠 LADIES HOSTELS
@@ -55,7 +56,6 @@ const CAMPUS_DATA = [
     { name: "Foodys", lat: 12.96903, lng: 79.15935, type: "store" },
     { name: "Darling Canteen", lat: 12.97055, lng: 79.15444, type: "store" },
     { name: "Apples, SMV Portico", lat: 12.96968, lng: 79.15722, type: "store" },
-    { name: "DC Canteen", lat: 12.97008, lng: 79.15885, type: "store" },
     { name: "Amazon Pickup Point", lat: 12.97202, lng: 79.16424, type: "store" },
     { name: "Fresh Mart", lat: 12.96749, lng: 79.15010, type: "store" },
     { name: "McD", lat: 12.96806, lng: 79.14936, type: "store" },
@@ -68,7 +68,7 @@ const CAMPUS_DATA = [
 
     // 🏀 AMENITIES & SPORTS
     { name: "Parking Area", lat: 12.96891, lng: 79.15494, type: "amenity" },
-    { name: "Kalpana Chawala", lat: 12.96934, lng: 79.15664, type: "amenity" },
+    { name: "Kalpana Chawala", lat: 12.96834, lng: 79.15664, type: "amenity" },
     { name: "Library", lat: 12.96919, lng: 79.15690, type: "amenity" },
     { name: "Healthcare Center", lat: 12.96953, lng: 79.15437, type: "amenity" },
     { name: "All Mart", lat: 12.97015, lng: 79.15443, type: "amenity" },
