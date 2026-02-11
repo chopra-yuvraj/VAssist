@@ -117,40 +117,48 @@ ALTER PUBLICATION supabase_realtime ADD TABLE requests;
 
 ---
 
-## Step 6: Update Netlify Environment (for deployment)
+## Step 6: Deploy on Render
 
-If deploying on Netlify:
+VAssist deploys as a **Static Site** on Render. API keys are injected at build time — never pushed to GitHub.
 
-1. Go to **Netlify Dashboard → Site → Site settings → Environment variables**.
-2. You don't need any build-time env vars anymore — the credentials are in `js/config.js`.
-3. **IMPORTANT**: For production, avoid hardcoding credentials in `config.js`. Instead use Netlify's build env + a build step, or accept the trade-off since the Supabase anon key is designed to be public (RLS protects the data).
+> See **[RENDER_DEPLOY.md](file:///S:/GitHub%20Repository/VAssist/RENDER_DEPLOY.md)** for the complete, step-by-step deployment guide.
+
+**Quick summary:**
+1. Push your repo to GitHub (with `js/config.js` gitignored).
+2. Create a **Static Site** on Render, connected to your repo.
+3. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` as Render environment variables.
+4. `build.sh` generates `js/config.js` with real credentials at deploy time.
+5. Update Supabase Auth redirect URLs to your Render domain.
+
+> **Security note:** The Supabase `anon` key is designed to be public — Row Level Security (RLS) protects your data, not the key. The key is safe in the browser.
 
 ---
 
-## File Structure Explanation
-
-After cleanup, VAssist has this structure:
+## File Structure
 
 ```
 VAssist/
-├── index.html          ← Main app page (map, order, tracking)
-├── login.html          ← Login/Register page (Supabase Auth)
-├── history.html        ← Order history page (reads localStorage)
-├── netlify.toml        ← Netlify deployment config (static site headers)
-├── package.json        ← Project metadata
+├── build.sh                ← Build script (generates config.js at deploy time)
+├── RENDER_DEPLOY.md        ← Complete Render deployment guide
+├── SUPABASE_GUIDE.md       ← This file — Supabase setup guide
+├── js/config.example.js    ← Template with placeholders (committed)
+├── js/config.js            ← Real keys (gitignored, NOT committed)
+├── .gitignore              ← Contains "js/config.js"
+├── index.html              ← Main app page (map, order, tracking)
+├── login.html              ← Login/Register page (Supabase Auth)
+├── history.html            ← Order history page
 ├── css/
-│   └── style.css       ← All styles + 480 lines of animations
+│   └── style.css           ← All styles + animations
 ├── js/
-│   ├── config.js       ← Supabase URL + anon key + app constants
-│   ├── api.js          ← Supabase DB queries + Realtime listeners
-│   ├── auth.js         ← Auth state manager (profile button, logout)
-│   ├── app.js          ← Main app controller (splash, map, orders, tracking)
-│   ├── map.js          ← Leaflet map service (markers, routes, geocoding)
-│   ├── location.js     ← VIT campus location coordinates
-│   └── utils.js        ← Pricing, OTP generation, toasts, confetti, storage
+│   ├── api.js              ← Supabase DB queries + Realtime listeners
+│   ├── auth.js             ← Auth state manager
+│   ├── app.js              ← Main app controller
+│   ├── map.js              ← Leaflet map service
+│   ├── location.js         ← VIT campus location coordinates
+│   └── utils.js            ← Pricing, OTP, toasts, confetti, storage
 ├── assets/
-│   └── logo.png        ← VAssist logo
-├── .gitignore
+│   └── logo.png            ← VAssist logo
+├── package.json
 ├── LICENSE
 └── README.md
 ```
@@ -198,21 +206,6 @@ Partner accepts   → api.js → supabase.from('requests').update({ status: 'ACC
 User tracking     ← api.js ← Supabase Realtime (UPDATE event on that request ID)
 OTP verification  → api.js → supabase query OTP, then update status to 'DELIVERED'
 ```
-
----
-
-## Deleted Files (and why)
-
-| File | Reason |
-|------|--------|
-| `server.py` | Local Python HTTP server — replaced by Supabase |
-| `js/firebase-config.js` | Firebase init — replaced by Supabase SDK in `api.js` |
-| `netlify/functions/*` | Netlify serverless functions — replaced by direct Supabase queries |
-| `scripts/generate-config.sh` | Generated Firebase config from env vars — not needed |
-| `_redirects` | **CAUSED THE REDIRECT LOOP** — routed all paths to `index.html`, breaking `login.html` and `history.html` |
-| `node_modules/` | No npm dependencies needed — Supabase SDK loaded via CDN |
-| `package-lock.json` | Artifact of old npm install |
-| `.env` | Was empty |
 
 ---
 

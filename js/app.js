@@ -1,6 +1,6 @@
 /* ============================================
    VAssist — Main Application Controller
-   v3.0 — Firebase Realtime DB Backend
+   v4.0 — Supabase Realtime Backend
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 Utils.showToast("📡 Request Broadcasted to Campus!");
 
-                // Start real-time tracking (Firebase listener)
+                // Start real-time tracking (Supabase Realtime listener)
                 startUserTracking(activeRequestId);
 
             } catch (err) {
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // ==========================================
-        // 📡 USER TRACKING — Firebase Real-Time
+        // 📡 USER TRACKING — Supabase Realtime
         // ==========================================
 
         let unsubUserTracking = null;
