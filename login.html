@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VAssist | Login — Campus Delivery</title>
+    <meta name="theme-color" content="#4A4BAF">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            overflow: auto;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1040 30%, #2a2370 60%, #4A4BAF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .auth-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+        }
+
+        .auth-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #ECA526;
+            top: -150px;
+            right: -100px;
+            animation: orb-float 18s ease-in-out infinite;
+        }
+
+        .auth-orb-2 {
+            width: 350px;
+            height: 350px;
+            background: #E5546B;
+            bottom: -120px;
+            left: -80px;
+            animation: orb-float 22s ease-in-out infinite reverse;
+        }
+
+        .auth-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: #4A4BAF;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orb-float 25s ease-in-out infinite;
+            animation-delay: -8s;
+        }
+
+        .auth-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(2px 2px at 10% 20%, rgba(236, 165, 38, 0.4), transparent), radial-gradient(2px 2px at 30% 70%, rgba(255, 255, 255, 0.2), transparent), radial-gradient(2px 2px at 50% 30%, rgba(229, 84, 107, 0.3), transparent), radial-gradient(2px 2px at 70% 80%, rgba(255, 255, 255, 0.15), transparent), radial-gradient(2px 2px at 90% 40%, rgba(74, 75, 175, 0.3), transparent);
+            animation: sparkle-drift 10s ease-in-out infinite;
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            animation: card-slide-up 0.8s var(--ease-spring) both;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: var(--radius-xl);
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 40px rgba(74, 75, 175, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4A4BAF, #ECA526, #E5546B, #4A4BAF);
+            background-size: 300% auto;
+            animation: gradient-shift 4s ease-in-out infinite;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .auth-logo img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(74, 75, 175, 0.2);
+            box-shadow: 0 0 30px rgba(236, 165, 38, 0.2), 0 8px 24px rgba(0, 0, 0, 0.1);
+            animation: logo-pulse 2.5s ease-in-out infinite;
+        }
+
+        .auth-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-top: 12px;
+            background: linear-gradient(135deg, #4A4BAF, #ECA526);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .auth-logo p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: var(--radius-full);
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: none;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-full);
+            transition: all 0.3s var(--ease-spring);
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-tab.active {
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: stagger-fade-in 0.4s var(--ease-spring) both;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: var(--radius-md);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background: var(--surface-hover);
+            transition: all 0.3s var(--ease-spring);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow), 0 0 20px rgba(236, 165, 38, 0.08);
+            transform: translateY(-1px);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-error {
+            font-size: 0.8rem;
+            color: var(--accent-red);
+            margin-top: 6px;
+            font-weight: 600;
+            min-height: 20px;
+            display: block;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-spring);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn-primary {
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
+            color: white;
+            box-shadow: 0 4px 16px var(--primary-glow);
+            animation: gradient-shift 4s ease-in-out infinite;
+        }
+
+        .auth-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px rgba(236, 165, 38, 0.2);
+        }
+
+        .auth-btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .auth-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+        }
+
+        .google-btn {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .google-btn:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(74, 75, 175, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .google-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .domain-notice {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(74, 75, 175, 0.06), rgba(236, 165, 38, 0.04));
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(74, 75, 175, 0.1);
+        }
+
+        .domain-notice strong {
+            color: var(--primary);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .auth-footer a {
+            color: rgba(236, 165, 38, 0.7);
+            text-decoration: none;
+        }
+
+        .auth-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--dark-glass);
+            backdrop-filter: blur(16px);
+            color: white;
+            padding: 13px 28px;
+            border-radius: var(--radius-full);
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 3000;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s var(--ease-spring);
+            white-space: nowrap;
+        }
+
+        .auth-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 420px) {
+            .auth-card {
+                padding: 28px 20px;
+                border-radius: var(--radius-lg);
+            }
+
+            .auth-logo img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .auth-logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-bg-orbs">
+        <div class="auth-orb auth-orb-1"></div>
+        <div class="auth-orb auth-orb-2"></div>
+        <div class="auth-orb auth-orb-3"></div>
+    </div>
+    <div class="auth-particles"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="assets/logo.png" alt="VAssist Logo">
+                <h1>VAssist</h1>
+                <p>Campus Delivery Network</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login" id="tab-login">Login</button>
+                <button class="auth-tab" data-tab="register" id="tab-register">Register</button>
+            </div>
+
+            <form class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="you@vitstudent.ac.in" required
+                        autocomplete="email">
+                    <span class="form-error" id="login-email-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" class="form-input" id="login-password" placeholder="Enter your password"
+                        required autocomplete="current-password">
+                    <span class="form-error" id="login-password-error"></span>
+                </div>
+                <button type="submit" class="auth-btn auth-btn-primary" id="login-submit">Login →</button>
+            </form>
+
+            <form class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" class="form-input" id="reg-name" placeholder="Yuvraj Chopra" required
+                        autocomplete="name">
+                    <span class="form-error" id="reg-name-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">VIT Student Email</label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="you@vitstudent.ac.in" required
+                        autocomplete="email">
+                    <span class="form-error" id="reg-email-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" class="form-input" id="reg-password" placeholder="Min 6 characters" required
+                        autocomplete="new-password" minlength="6">
+                    <span class="form-error" id="reg-password-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <input type="password" class="form-input" id="reg-confirm" placeholder="Re-enter password" required
+                        autocomplete="new-password">
+                    <span class="form-error" id="reg-confirm-error"></span>
+                </div>
+                <button type="submit" class="auth-btn auth-btn-primary" id="register-submit">Create Account →</button>
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <button class="auth-btn google-btn" id="google-signin-btn" type="button">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                    <path fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Sign in with Google
+            </button>
+
+            <div class="domain-notice">
+                🎓 Only <strong>@vitstudent.ac.in</strong> email addresses can register
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            &copy; 2026 VAssist — <a href="index.html">Back to App</a>
+        </div>
+    </div>
+
+    <div class="auth-toast" id="auth-toast">Message</div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ALLOWED_DOMAIN = '@vitstudent.ac.in';
+            const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+            // Already logged in? Go to app
+            const saved = localStorage.getItem('vassist_user');
+            if (saved) { window.location.href = 'index.html'; return; }
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.auth-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    if (tab.dataset.tab === 'login') { loginForm.classList.add('active'); registerForm.classList.remove('active'); }
+                    else { registerForm.classList.add('active'); loginForm.classList.remove('active'); }
+                    clearErrors();
+                });
+            });
+
+            function clearErrors() { document.querySelectorAll('.form-error').forEach(e => e.textContent = ''); }
+            function showToast(msg) { const t = document.getElementById('auth-toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500); }
+            function isValidDomain(email) { return email.toLowerCase().endsWith(ALLOWED_DOMAIN); }
+
+            function saveUser(user) {
+                localStorage.setItem('vassist_user', JSON.stringify({
+                    uid: user.id || user.uid || 'local',
+                    email: user.email,
+                    name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0],
+                    photoURL: user.user_metadata?.avatar_url || null,
+                    loginAt: Date.now()
+                }));
+            }
+
+            // ── Login ──
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); clearErrors();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+                if (!email) { document.getElementById('login-email-error').textContent = 'Email is required'; return; }
+                if (!password) { document.getElementById('login-password-error').textContent = 'Password is required'; return; }
+
+                const btn = document.getElementById('login-submit');
+                btn.disabled = true; btn.textContent = 'Logging in...';
+
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                if (error) {
+                    document.getElementById('login-password-error').textContent = error.message;
+                    btn.disabled = false; btn.textContent = 'Login →'; return;
+                }
+                saveUser(data.user);
+                showToast('✅ Login successful!');
+                setTimeout(() => window.location.href = 'index.html', 800);
+            });
+
+            // ── Register ──
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); clearErrors();
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                const password = document.getElementById('reg-password').value;
+                const confirm = document.getElementById('reg-confirm').value;
+
+                if (!name) { document.getElementById('reg-name-error').textContent = 'Name is required'; return; }
+                if (!email) { document.getElementById('reg-email-error').textContent = 'Email is required'; return; }
+                if (!isValidDomain(email)) { document.getElementById('reg-email-error').textContent = '❌ Only @vitstudent.ac.in emails can register'; return; }
+                if (password.length < 6) { document.getElementById('reg-password-error').textContent = 'Min 6 characters'; return; }
+                if (password !== confirm) { document.getElementById('reg-confirm-error').textContent = 'Passwords do not match'; return; }
+
+                const btn = document.getElementById('register-submit');
+                btn.disabled = true; btn.textContent = 'Creating account...';
+
+                const { data, error } = await sb.auth.signUp({
+                    email, password,
+                    options: { data: { full_name: name } }
+                });
+                if (error) {
+                    document.getElementById('reg-email-error').textContent = error.message;
+                    btn.disabled = false; btn.textContent = 'Create Account →'; return;
+                }
+                saveUser(data.user);
+                showToast('🎉 Account created! Check email to verify.');
+                setTimeout(() => window.location.href = 'index.html', 1200);
+            });
+
+            // ── Google Sign-In (via Supabase OAuth) ──
+            document.getElementById('google-signin-btn').addEventListener('click', async () => {
+                const { data, error } = await sb.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: window.location.origin + '/index.html' }
+                });
+                if (error) showToast('⚠️ ' + error.message);
+                // After OAuth redirect, Supabase will handle the session — we catch it on index.html load
+            });
+
+            // ── Check if returning from OAuth redirect ──
+            (async () => {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    const user = session.user;
+                    if (!isValidDomain(user.email)) {
+                        await sb.auth.signOut();
+                        showToast('❌ Only @vitstudent.ac.in accounts allowed');
+                        return;
+                    }
+                    saveUser(user);
+                    window.location.href = 'index.html';
+                }
+            })();
+        });
+    </script>
+</body>
+
+</html>

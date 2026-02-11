@@ -116,7 +116,7 @@ const Utils = {
         container.className = 'confetti-container';
         document.body.appendChild(container);
 
-        const colors = ['#6C63FF', '#A855F7', '#EC4899', '#2ED573', '#FFA502', '#18DCFF', '#FF4757'];
+        const colors = ['#4A4BAF', '#6566C9', '#ECA526', '#E5546B', '#2ED573', '#18DCFF', '#FFA502'];
 
         for (let i = 0; i < count; i++) {
             const piece = document.createElement('div');

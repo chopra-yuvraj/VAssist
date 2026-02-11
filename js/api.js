@@ -1,111 +1,167 @@
 /* ============================================
-   VAssist — Firestore API Service
-   Real-time sync via onSnapshot listeners
+   VAssist — Supabase API Service
+   All database operations via Supabase JS SDK
    ============================================ */
+
+// Initialize Supabase client (loaded from CDN in HTML)
+let supabase;
+try {
+    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    console.log('✅ Supabase connected');
+} catch (e) {
+    console.warn('⚠️ Supabase SDK not loaded — check your internet or config.js credentials', e);
+}
 
 const API = {
     // ── Create a new delivery request ──
     createRequest: async (data) => {
-        try {
-            await db.collection('requests').doc(data.id).set({
-                ...data,
+        const { data: row, error } = await supabase
+            .from('requests')
+            .insert([{
+                id: data.id,
+                item: data.item,
+                pickup: data.pickup,
+                drop_location: data.drop_location,
+                pickup_coords: data.pickup_coords,
+                drop_coords: data.drop_coords,
+                delivery_type: data.delivery_type,
+                fare: data.fare,
+                otp: data.otp,
                 status: 'PENDING',
-                created_at: firebase.firestore.FieldValue.serverTimestamp(),
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true, id: data.id };
-        } catch (err) {
-            console.error('API.createRequest error:', err);
-            throw err;
-        }
+                user_id: data.user_id || null
+            }])
+            .select()
+            .single();
+
+        if (error) throw new Error(error.message);
+        return { success: true, id: row.id };
     },
 
     // ── Accept a request (partner side) ──
     acceptRequest: async (id, partnerName) => {
-        try {
-            const doc = await db.collection('requests').doc(id).get();
-            if (!doc.exists || doc.data().status !== 'PENDING') {
-                throw new Error('Already accepted');
-            }
-            await db.collection('requests').doc(id).update({
-                status: 'ACCEPTED',
-                partner_name: partnerName,
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true };
-        } catch (err) {
-            console.error('API.acceptRequest error:', err);
-            throw err;
-        }
+        const { error } = await supabase
+            .from('requests')
+            .update({ status: 'ACCEPTED', partner_name: partnerName })
+            .eq('id', id)
+            .eq('status', 'PENDING');
+
+        if (error) throw new Error(error.message);
+        return { success: true };
     },
 
     // ── Verify OTP → mark as delivered ──
     verifyOTP: async (id, otp) => {
-        try {
-            const doc = await db.collection('requests').doc(id).get();
-            if (!doc.exists) return { ok: false, error: 'Not found' };
-            const req = doc.data();
-            if (req.status === 'DELIVERED') return { ok: false, error: 'Already delivered' };
-            if (String(req.otp) !== String(otp)) return { ok: false, success: false, error: 'Invalid OTP' };
-            await db.collection('requests').doc(id).update({
-                status: 'DELIVERED',
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { ok: true, success: true };
-        } catch (err) {
-            console.error('API.verifyOTP error:', err);
-            return { ok: false, error: 'Network error' };
-        }
+        const { data: row, error } = await supabase
+            .from('requests')
+            .select('otp')
+            .eq('id', id)
+            .single();
+
+        if (error) return { ok: false, error: 'Request not found' };
+        if (String(row.otp) !== String(otp)) return { ok: false, error: 'Invalid OTP' };
+
+        const { error: updateErr } = await supabase
+            .from('requests')
+            .update({ status: 'DELIVERED' })
+            .eq('id', id);
+
+        if (updateErr) return { ok: false, error: updateErr.message };
+        return { ok: true, success: true };
     },
 
     // ── Update request status ──
     updateStatus: async (id, status) => {
-        try {
-            await db.collection('requests').doc(id).update({
-                status,
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            return { success: true };
-        } catch (err) {
-            console.error('API.updateStatus error:', err);
-            return null;
-        }
+        const { error } = await supabase
+            .from('requests')
+            .update({ status })
+            .eq('id', id);
+
+        if (error) return null;
+        return { success: true };
     },
 
-    // ═══ REAL-TIME LISTENERS (Firestore onSnapshot) ═══
-    _unsubs: {},
+    // ═══ REALTIME LISTENERS (Supabase Realtime) ═══
+    _subscriptions: {},
 
-    // Listen for a specific request (user tracking their order)
+    // Listen for updates on a specific request (user tracking their order)
     onRequestUpdate: (id, callback) => {
         API.stopListener('req_' + id);
-        const unsub = db.collection('requests').doc(id).onSnapshot((doc) => {
-            callback(doc.exists ? { id: doc.id, ...doc.data() } : null);
-        });
-        API._unsubs['req_' + id] = unsub;
-        return () => { unsub(); delete API._unsubs['req_' + id]; };
+
+        // Fetch initial state
+        (async () => {
+            const { data } = await supabase
+                .from('requests')
+                .select('*')
+                .eq('id', id)
+                .single();
+            if (data) callback(data);
+        })();
+
+        // Subscribe to realtime changes
+        const channel = supabase
+            .channel('req_' + id)
+            .on('postgres_changes',
+                { event: 'UPDATE', schema: 'public', table: 'requests', filter: `id=eq.${id}` },
+                (payload) => callback(payload.new)
+            )
+            .subscribe();
+
+        API._subscriptions['req_' + id] = channel;
+
+        return () => {
+            supabase.removeChannel(channel);
+            delete API._subscriptions['req_' + id];
+        };
     },
 
     // Listen for all pending requests (partner dashboard)
     onPendingRequests: (callback) => {
         API.stopListener('pending');
-        const unsub = db.collection('requests')
-            .where('status', '==', 'PENDING')
-            .orderBy('created_at', 'desc')
-            .onSnapshot((snapshot) => {
-                const requests = [];
-                snapshot.forEach(doc => requests.push({ id: doc.id, ...doc.data() }));
-                callback(requests);
-            });
-        API._unsubs['pending'] = unsub;
-        return () => { unsub(); delete API._unsubs['pending']; };
+
+        // Fetch initial list
+        (async () => {
+            const { data } = await supabase
+                .from('requests')
+                .select('*')
+                .eq('status', 'PENDING')
+                .order('created_at', { ascending: false });
+            callback(data || []);
+        })();
+
+        // Subscribe to realtime inserts and updates
+        const channel = supabase
+            .channel('pending_requests')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'requests' },
+                async () => {
+                    // Re-fetch all pending on any change
+                    const { data } = await supabase
+                        .from('requests')
+                        .select('*')
+                        .eq('status', 'PENDING')
+                        .order('created_at', { ascending: false });
+                    callback(data || []);
+                }
+            )
+            .subscribe();
+
+        API._subscriptions['pending'] = channel;
+
+        return () => {
+            supabase.removeChannel(channel);
+            delete API._subscriptions['pending'];
+        };
     },
 
     stopListener: (name) => {
-        if (API._unsubs[name]) { API._unsubs[name](); delete API._unsubs[name]; }
+        if (API._subscriptions[name]) {
+            supabase.removeChannel(API._subscriptions[name]);
+            delete API._subscriptions[name];
+        }
     },
 
     stopAllListeners: () => {
-        Object.values(API._unsubs).forEach(unsub => unsub());
-        API._unsubs = {};
+        Object.values(API._subscriptions).forEach(ch => supabase.removeChannel(ch));
+        API._subscriptions = {};
     }
 };
