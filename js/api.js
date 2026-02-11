@@ -15,6 +15,10 @@ try {
 const API = {
     // ── Create a new delivery request ──
     createRequest: async (data) => {
+        // Ensure user is authenticated for RLS
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error("You must be logged in to make a request.");
+
         const { data: row, error } = await supabase
             .from('requests')
             .insert([{

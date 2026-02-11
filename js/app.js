@@ -215,7 +215,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 drop_lng: STATE.drop?.lng,
                 fare: priceEl.innerText,
                 delivery_type: selectedDeliveryType,
-                otp: String(otp)
+                fare: priceEl.innerText,
+                delivery_type: selectedDeliveryType,
+                otp: String(otp),
+                user_id: VAssistAuth.getUser()?.uid || VAssistAuth.getUser()?.id || null
             };
 
             try {
