@@ -1,19 +1,20 @@
 #!/bin/bash
 # Render Build Script — generates js/config.js from environment variables
-# Set SUPABASE_URL and SUPABASE_ANON_KEY in Render Dashboard → Environment
+# Uses js/config.example.js as a template
 
-echo "🔧 Generating js/config.js from environment variables..."
+echo "🔧 Generating js/config.js from config.example.js..."
 
-cat > js/config.js << EOF
-const CONFIG = {
-    SUPABASE_URL: '${SUPABASE_URL}',
-    SUPABASE_ANON_KEY: '${SUPABASE_ANON_KEY}',
-    VIT_CENTER: [12.9716, 79.1594],
-    API: { OSRM: 'https://router.project-osrm.org/route/v1/walking/' },
-    PRICING: { WALKER: { BASE: 10, PER_KM: 5 }, CYCLIST: { BASE: 15, PER_KM: 8 } },
-    KEYS: { HISTORY: 'vassist_history', ACTIVE_REQ: 'vassist_active_request', SETTINGS: 'vassist_settings' },
-    APP: { NAME: 'VAssist', VERSION: '4.0.0', AUTHOR: 'Yuvraj Chopra' }
-};
-EOF
+if [ ! -f "js/config.example.js" ]; then
+  echo "❌ Error: js/config.example.js not found!"
+  exit 1
+fi
 
-echo "✅ config.js generated successfully"
+# Copy template to actual config
+cp js/config.example.js js/config.js
+
+# Replace placeholders with Environment Variables
+# Using | as delimiter to avoid issues with / in URLs or keys
+sed -i "s|YOUR_SUPABASE_URL_HERE|${SUPABASE_URL}|g" js/config.js
+sed -i "s|YOUR_SUPABASE_ANON_KEY_HERE|${SUPABASE_ANON_KEY}|g" js/config.js
+
+echo "✅ config.js generated successfully from template"
