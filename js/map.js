@@ -35,8 +35,18 @@ class MapService {
             crossOrigin: true
         }).addTo(this.map);
 
+        if (typeof L === 'undefined') {
+            console.error('Leaflet (L) is not defined. Map cannot load.');
+            return;
+        }
+
         L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(this.map);
         L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+
+        // Force resize calculation after animation finishes (fixes map loading in hidden/animated tabs)
+        setTimeout(() => {
+            this.map.invalidateSize();
+        }, 400);
 
         // Click handler
         this.map.on('click', (e) => {
@@ -62,7 +72,7 @@ class MapService {
     // Invalidate size when container becomes visible
     refresh() {
         if (this.map) {
-            setTimeout(() => this.map.invalidateSize(), 100);
+            setTimeout(() => this.map.invalidateSize(), 400);
         }
     }
 
