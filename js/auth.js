@@ -1,38 +1,64 @@
 /* ============================================
-   VAssist — Supabase Auth Manager
-   Handles login state, profile UI, floating orbs
+   VAssist v5.0 — Auth Manager
+   Open signups, profile sync, trusted circle
    ============================================ */
 
 (function () {
-    const ALLOWED_DOMAIN = '@vitstudent.ac.in';
+    const sb = window.sb;
 
     function getUser() {
-        try {
-            return JSON.parse(localStorage.getItem('vassist_user'));
-        } catch { return null; }
+        try { return JSON.parse(localStorage.getItem(CONFIG.KEYS.USER)); }
+        catch { return null; }
     }
 
     async function logout() {
-        localStorage.removeItem('vassist_user');
-        try {
-            await window.sb.auth.signOut();
-        } catch (e) { /* ignore */ }
+        localStorage.removeItem(CONFIG.KEYS.USER);
+        try { await sb.auth.signOut(); } catch (e) { /* ignore */ }
         window.location.href = 'login.html';
     }
 
-    // ── Update profile button in header ──
+    // Sync profile from Supabase profiles table
+    async function syncProfile() {
+        if (!sb) return null;
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) return null;
+
+        const profile = await API.getProfile(session.user.id);
+        if (profile) {
+            const userData = {
+                uid: session.user.id,
+                email: session.user.email,
+                username: profile.username,
+                name: profile.full_name || session.user.email.split('@')[0],
+                avatar_url: profile.avatar_url,
+                trust_score: profile.trust_score || 0
+            };
+            localStorage.setItem(CONFIG.KEYS.USER, JSON.stringify(userData));
+            return userData;
+        }
+        return null;
+    }
+
+    // Update profile UI in header
     function updateProfileUI() {
         const profileBtn = document.getElementById('nav-profile');
         if (!profileBtn) return;
 
         const user = getUser();
         if (user) {
-            profileBtn.textContent = user.name ? user.name.charAt(0).toUpperCase() : '👤';
-            profileBtn.title = `${user.name || 'User'} (${user.email})`;
+            const initial = (user.name || user.username || 'U').charAt(0).toUpperCase();
+            profileBtn.textContent = initial;
+            profileBtn.title = `${user.name || user.username} (${user.email})`;
             profileBtn.style.background = 'var(--primary-gradient)';
             profileBtn.style.color = 'white';
             profileBtn.style.fontWeight = '700';
             profileBtn.style.fontSize = '0.85rem';
+            profileBtn.style.borderRadius = '50%';
+            profileBtn.style.width = '34px';
+            profileBtn.style.height = '34px';
+            profileBtn.style.display = 'flex';
+            profileBtn.style.alignItems = 'center';
+            profileBtn.style.justifyContent = 'center';
 
             profileBtn.onclick = () => {
                 if (confirm('Log out of VAssist?')) logout();
@@ -44,60 +70,41 @@
         }
     }
 
-    // Add floating orbs to main app
-    function addFloatingOrbs() {
-        if (document.querySelector('.floating-orbs')) return;
-        const el = document.createElement('div');
-        el.className = 'floating-orbs';
-        el.innerHTML = '<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>';
-        document.body.insertBefore(el, document.body.firstChild);
-    }
-
-    // Add aurora background
-    function addAuroraBackground() {
-        if (document.querySelector('.aurora-bg')) return;
-        const el = document.createElement('div');
-        el.className = 'aurora-bg';
-        document.body.insertBefore(el, document.body.firstChild);
-    }
-
     function init() {
         updateProfileUI();
-        addFloatingOrbs();
-        addAuroraBackground();
 
-        // ── Auth Persistence Listener ──
-        // Keeps localStorage in sync with actual Supabase session
-        if (window.sb) {
-            window.sb.auth.onAuthStateChange((event, session) => {
-                if (event === 'SIGNED_IN' && session) {
-                    const user = session.user;
-                    localStorage.setItem('vassist_user', JSON.stringify({
-                        uid: user.id || user.uid,
-                        email: user.email,
-                        name: user.user_metadata?.full_name || user.email.split('@')[0],
-                        photoURL: user.user_metadata?.avatar_url || null
-                    }));
-                    updateProfileUI();
-                } else if (event === 'SIGNED_OUT') {
-                    localStorage.removeItem('vassist_user');
-                    window.location.href = 'login.html';
-                }
-            });
+        if (!sb) return;
 
-            // Check session on load
-            /* 
-               If we have no session but have vassist_user, it means session expired/cleared.
-               We should clear vassist_user to avoid UI mismatch.
-            */
-            window.sb.auth.getSession().then(({ data: { session } }) => {
-                if (!session && localStorage.getItem('vassist_user')) {
-                    console.log('Session expired, clearing local state');
-                    localStorage.removeItem('vassist_user');
-                    updateProfileUI();
-                }
-            });
-        }
+        // Auth state listener
+        sb.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                const user = session.user;
+                localStorage.setItem(CONFIG.KEYS.USER, JSON.stringify({
+                    uid: user.id,
+                    email: user.email,
+                    username: user.user_metadata?.username || user.email.split('@')[0],
+                    name: user.user_metadata?.full_name || user.email.split('@')[0],
+                    avatar_url: user.user_metadata?.avatar_url || null,
+                    trust_score: 0
+                }));
+                updateProfileUI();
+                // Sync with profiles table in background
+                syncProfile();
+            } else if (event === 'SIGNED_OUT') {
+                localStorage.removeItem(CONFIG.KEYS.USER);
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Check session validity on load
+        sb.auth.getSession().then(({ data: { session } }) => {
+            if (!session && localStorage.getItem(CONFIG.KEYS.USER)) {
+                localStorage.removeItem(CONFIG.KEYS.USER);
+                updateProfileUI();
+            } else if (session) {
+                syncProfile();
+            }
+        });
     }
 
     if (document.readyState === 'loading') {
@@ -106,5 +113,5 @@
         init();
     }
 
-    window.VAssistAuth = { getUser, logout };
+    window.VAssistAuth = { getUser, logout, syncProfile, updateProfileUI };
 })();

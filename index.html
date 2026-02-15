@@ -2,26 +2,24 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>VAssist | Campus Delivery — Fast, Smart, Student-Powered</title>
+    <title>VAssist | Your Trusted Courier Network</title>
     <meta name="description"
-        content="VAssist is the ultimate campus delivery platform for VIT. Get food, stationery, and more delivered by fellow students. Fast, affordable, reliable.">
+        content="VAssist — Don't trust strangers, trust your friends. Get packages delivered by people you know.">
     <meta name="theme-color" content="#4A4BAF">
-    <meta property="og:title" content="VAssist — Campus Delivery Network">
-    <meta property="og:description" content="Fast campus deliveries powered by students at VIT Vellore.">
+    <meta property="og:title" content="VAssist — Trusted Courier Network">
+    <meta property="og:description" content="Private, friend-powered package delivery.">
     <meta property="og:type" content="website">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Preconnect for Speed -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com">
-
-    <!-- Fonts & Leaflet -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css">
@@ -30,30 +28,17 @@
 <body>
 
     <!-- ═══════════════════════════════════════════
-         🚀 SPLASH SCREEN — Cinematic Entry with Logo & Cursor
+         🚀 SPLASH SCREEN
          ═══════════════════════════════════════════ -->
     <div id="splash-screen">
-        <div class="splash-particles"></div>
         <div class="logo-container">
-            <!-- Logo Image Placeholder -->
-            <div class="logo-image-frame">
-                <div class="logo-image-placeholder">
-                    <img src="assets/logo.png" alt="VAssist Logo">
-                </div>
-                <div class="logo-ring-spin"></div>
-            </div>
-
+            <div class="splash-shield">🛡️</div>
             <h1>VAssist</h1>
-            <p>From Store To Door!!!</p>
-
-            <!-- Centered Loading Cursor -->
-            <div class="splash-cursor-loader">
-                <div class="cursor-dot"></div>
-                <div class="cursor-ring"></div>
-                <div class="cursor-ring ring-2"></div>
+            <p>Your Trusted Courier Network</p>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
             </div>
-
-            <div class="splash-status">Connecting to campus network...</div>
+            <div class="splash-status">Establishing secure connection...</div>
         </div>
     </div>
 
@@ -64,100 +49,281 @@
 
         <!-- Glass Header -->
         <header class="glass-header" id="app-header">
-            <div class="brand"><img src="assets/logo.png" alt="V" class="brand-logo"><span
-                    class="brand-text">VAssist</span></div>
-
-            <div class="header-nav">
-                <a href="history.html" class="nav-icon-btn" title="Order History" id="nav-history">📋</a>
-                <button class="nav-icon-btn" title="Profile" id="nav-profile">👤</button>
+            <div class="brand">
+                <span class="brand-shield">🛡️</span>
+                <span class="brand-text">VAssist</span>
             </div>
 
-            <div class="mode-switch-container">
-                <span class="mode-label" id="label-user">User</span>
-                <label class="switch no-select">
-                    <input type="checkbox" id="mode-toggle">
-                    <span class="slider round"></span>
-                </label>
-                <span class="mode-label" id="label-partner">Partner</span>
+            <div class="header-nav">
+                <button class="nav-icon-btn" title="Trusted Circle" id="nav-friends">👥</button>
+                <button class="nav-icon-btn" title="My Requests" id="nav-history">📋</button>
+                <button class="nav-icon-btn" title="Profile" id="nav-profile">👤</button>
             </div>
         </header>
 
-        <!-- Map -->
-        <div id="map"></div>
+        <!-- ═══════════════════════════════════════
+             🏠 DASHBOARD — Fork in the Road
+             ═══════════════════════════════════════ -->
+        <section id="dashboard-view" class="view active">
+            <div class="dashboard-content">
+                <div class="dashboard-greeting">
+                    <h2 id="greeting-text">Welcome back</h2>
+                    <p class="trust-subtitle">Don't trust strangers — trust your friends.</p>
+                </div>
 
-        <!-- Locate Button (FAB) -->
-        <button id="locate-btn" class="fab-btn" aria-label="Locate me on map">📍</button>
+                <div class="fork-cards">
+                    <button class="fork-card sender-card" id="btn-sender-mode">
+                        <div class="fork-icon">📦</div>
+                        <h3>I Need a Delivery</h3>
+                        <p>Request a friend to pick up your package</p>
+                        <span class="fork-arrow">→</span>
+                    </button>
+
+                    <button class="fork-card carrier-card" id="btn-carrier-mode">
+                        <div class="fork-icon">🚶</div>
+                        <h3>I Can Bring a Package</h3>
+                        <p>Help a friend by delivering their package</p>
+                        <span class="fork-arrow">→</span>
+                    </button>
+                </div>
+
+                <div class="dashboard-stats" id="dashboard-stats">
+                    <div class="stat-chip">
+                        <span class="stat-icon">🛡️</span>
+                        <span>Trust Score: <strong id="stat-trust">0</strong></span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-icon">👥</span>
+                        <span>Friends: <strong id="stat-friends">0</strong></span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-icon">📦</span>
+                        <span>Deliveries: <strong id="stat-deliveries">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- ═══════════════════════════════════════
-             👤 USER UI
+             📦 SENDER MODE — Multi-Step Wizard
              ═══════════════════════════════════════ -->
-        <main id="user-ui" class="ui-layer">
+        <section id="sender-view" class="view">
+            <div class="view-header">
+                <button class="back-btn" id="sender-back">← Back</button>
+                <h3>New Delivery Request</h3>
+            </div>
 
-            <!-- Panel 1: Request -->
-            <section id="request-panel" class="panel active">
-                <div class="panel-handle"></div>
-                <h2>Need something?</h2>
+            <!-- Progress Steps -->
+            <div class="wizard-progress">
+                <div class="wizard-step active" data-step="1"><span>1</span><small>Details</small></div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="2"><span>2</span><small>Package</small></div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="3"><span>3</span><small>Location</small></div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="4"><span>4</span><small>Broadcast</small></div>
+            </div>
 
-                <div class="input-wrapper">
-                    <span class="icon">📦</span>
-                    <input type="text" id="item-input" placeholder="E.g., Bluebook, Coffee, Charger..."
-                        autocomplete="off">
+            <!-- Step 1: External Details -->
+            <div class="wizard-panel active" id="wizard-step-1">
+                <h4>📋 External Courier Details</h4>
+                <p class="step-desc">Who is delivering the original package?</p>
+
+                <div class="form-group">
+                    <label>Item Description *</label>
+                    <input type="text" class="form-input" id="sender-item"
+                        placeholder="e.g., Amazon parcel, Laptop charger..." autocomplete="off">
                 </div>
 
-                <div class="location-box">
-                    <div class="loc-row" id="pickup-row">
-                        <span class="dot green"></span>
-                        <input type="text" id="pickup-input" placeholder="Tap map for Pickup Store" readonly>
+                <div class="form-group">
+                    <label>Courier / Sender Name</label>
+                    <input type="text" class="form-input" id="sender-courier"
+                        placeholder="e.g., Amazon, BlueDart, Flipkart, Friend...">
+                </div>
+
+                <div class="form-group">
+                    <label>Tracking ID / AWB Number</label>
+                    <input type="text" class="form-input tracking-input" id="sender-tracking"
+                        placeholder="e.g., TBA123456789, FMPP123456">
+                    <small class="field-hint">This helps your carrier identify the package at the gate/mailroom</small>
+                </div>
+
+                <button class="primary-btn" id="wizard-next-1">Continue → Package Specs</button>
+            </div>
+
+            <!-- Step 2: Package Specs -->
+            <div class="wizard-panel" id="wizard-step-2">
+                <h4>📦 Package Specifications</h4>
+                <p class="step-desc">Help your carrier know what to expect.</p>
+
+                <div class="form-group">
+                    <label>Weight</label>
+                    <div class="weight-slider-container">
+                        <input type="range" class="weight-slider" id="sender-weight" min="0.1" max="20" step="0.1"
+                            value="1">
+                        <div class="weight-display"><span id="weight-value">1.0</span> kg</div>
                     </div>
-                    <div class="line"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Fragile?</label>
+                    <div class="toggle-row">
+                        <span>This package contains breakable items</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sender-fragile">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Package Photo URL (optional)</label>
+                    <input type="url" class="form-input" id="sender-photo" placeholder="https://...">
+                </div>
+
+                <div class="wizard-nav">
+                    <button class="secondary-btn" id="wizard-prev-2">← Back</button>
+                    <button class="primary-btn" id="wizard-next-2">Continue → Location</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Location -->
+            <div class="wizard-panel" id="wizard-step-3">
+                <h4>📍 Pickup & Drop Location</h4>
+                <p class="step-desc">Tap the map or enter addresses.</p>
+
+                <div id="sender-map" class="inline-map"></div>
+
+                <div class="location-inputs">
+                    <div class="loc-row">
+                        <span class="dot green"></span>
+                        <input type="text" class="form-input" id="sender-pickup" placeholder="Tap map for pickup point"
+                            readonly>
+                    </div>
+                    <div class="loc-divider"></div>
                     <div class="loc-row">
                         <span class="dot red"></span>
-                        <input type="text" id="drop-input" value="Detecting location..." readonly>
+                        <input type="text" class="form-input" id="sender-drop" placeholder="Tap map for drop point"
+                            readonly>
                     </div>
                 </div>
 
-                <button id="find-assist-btn" class="primary-btn" disabled>
-                    Find Assistant <span class="arrow">→</span>
-                </button>
-            </section>
+                <button class="locate-inline-btn" id="sender-locate">📍 Use My Location as Drop</button>
 
-            <!-- Panel 2: Choose Delivery Mode -->
-            <section id="mode-panel" class="panel">
-                <div class="panel-header">
-                    <button class="back-btn" id="back-to-request">← Back</button>
-                    <h3>Choose Delivery</h3>
-                </div>
-                <div class="options-grid">
-                    <div class="option-card selected" data-type="walker" id="card-walker">
-                        <div class="opt-icon">🚶</div>
-                        <h4>Walker</h4>
-                        <div class="opt-price">₹<span id="price-walker">--</span></div>
+                <div class="fare-preview" id="fare-preview" style="display:none;">
+                    <div class="fare-row">
+                        <span>🚶 Walker</span>
+                        <strong>₹<span id="fare-walker">--</span></strong>
                     </div>
-                    <div class="option-card" data-type="cyclist" id="card-cyclist">
-                        <div class="opt-icon">🚲</div>
-                        <h4>Cyclist</h4>
-                        <div class="opt-price">₹<span id="price-cyclist">--</span></div>
+                    <div class="fare-row">
+                        <span>🚲 Cyclist</span>
+                        <strong>₹<span id="fare-cyclist">--</span></strong>
                     </div>
                 </div>
-                <button id="confirm-btn" class="primary-btn">
-                    Request Now <span class="arrow">→</span>
-                </button>
-            </section>
 
-            <!-- Panel 3: Tracking -->
-            <section id="track-panel" class="panel">
+                <div class="delivery-type-picker" id="delivery-type-picker" style="display:none;">
+                    <button class="type-chip selected" data-type="walker" id="type-walker">🚶 Walker</button>
+                    <button class="type-chip" data-type="cyclist" id="type-cyclist">🚲 Cyclist</button>
+                </div>
+
+                <div class="wizard-nav">
+                    <button class="secondary-btn" id="wizard-prev-3">← Back</button>
+                    <button class="primary-btn" id="wizard-next-3" disabled>Continue → Broadcast</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Broadcast Scope -->
+            <div class="wizard-panel" id="wizard-step-4">
+                <h4>📡 Broadcast to Your Circle</h4>
+                <p class="step-desc">Choose who can see your request.</p>
+
+                <div class="broadcast-options">
+                    <button class="broadcast-option selected" data-scope="all" id="scope-all">
+                        <span class="broadcast-icon">🌐</span>
+                        <div>
+                            <strong>All Friends</strong>
+                            <small>Visible to your entire trusted circle</small>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Shipping Label Preview -->
+                <div class="shipping-label" id="shipping-label-preview">
+                    <div class="label-header">
+                        <span class="label-logo">🛡️ VAssist</span>
+                        <span class="label-badge" id="label-type">WALKER</span>
+                    </div>
+                    <div class="label-body">
+                        <div class="label-row">
+                            <small>ITEM</small>
+                            <span id="label-item">—</span>
+                        </div>
+                        <div class="label-row">
+                            <small>COURIER</small>
+                            <span id="label-courier">—</span>
+                        </div>
+                        <div class="label-row highlight">
+                            <small>TRACKING ID</small>
+                            <span id="label-tracking" class="tracking-code">—</span>
+                        </div>
+                        <div class="label-meta">
+                            <div><small>WEIGHT</small><span id="label-weight">—</span></div>
+                            <div><small>FRAGILE</small><span id="label-fragile">No</span></div>
+                            <div><small>FARE</small><span id="label-fare">—</span></div>
+                        </div>
+                        <div class="label-locations">
+                            <div class="label-loc"><span class="dot green"></span><span id="label-pickup">—</span></div>
+                            <div class="label-arrow">↓</div>
+                            <div class="label-loc"><span class="dot red"></span><span id="label-drop">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="primary-btn confirm-btn" id="sender-confirm">🚀 Broadcast Request</button>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════
+             🚶 CARRIER MODE — Friend Feed
+             ═══════════════════════════════════════ -->
+        <section id="carrier-view" class="view">
+            <div class="view-header">
+                <button class="back-btn" id="carrier-back">← Back</button>
+                <h3>Friend Feed</h3>
+                <span class="online-badge">● Live</span>
+            </div>
+
+            <div id="carrier-feed" class="carrier-feed">
+                <div class="empty-state">
+                    <span class="empty-icon">📭</span>
+                    <p>No requests from friends yet.</p>
+                    <small>Add friends to see their delivery requests.</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════
+             📡 TRACKING VIEW
+             ═══════════════════════════════════════ -->
+        <section id="tracking-view" class="view">
+            <div class="view-header">
+                <button class="back-btn" id="tracking-back">← Dashboard</button>
+                <h3>Order Tracking</h3>
+            </div>
+
+            <div class="tracking-content">
                 <div class="radar-container" id="radar-section">
                     <div class="radar-circle">
                         <div class="radar-scanner"></div>
                     </div>
-                    <div class="radar-text" id="track-status">Looking for nearby students...</div>
+                    <div class="radar-text" id="track-status">Broadcasting to your trusted circle...</div>
                 </div>
 
                 <div id="assigned-info" class="assistant-card hidden">
                     <div class="profile-pic">🎓</div>
                     <div class="profile-info">
                         <h3 id="ast-name">Name</h3>
-                        <p id="ast-status">On the way to store</p>
+                        <p id="ast-status">Heading to pickup</p>
                     </div>
                     <div class="otp-badge">OTP: <span id="otp-display">0000</span></div>
                 </div>
@@ -167,14 +333,14 @@
                         <div class="step-indicator">✓</div>
                         <div class="step-content">
                             <h4>Request Accepted</h4>
-                            <p>Partner confirmed your order</p>
+                            <p>A friend accepted your request</p>
                         </div>
                     </div>
                     <div class="timeline-step active" id="step-2">
                         <div class="step-indicator">🏃</div>
                         <div class="step-content">
-                            <h4>Heading to Store</h4>
-                            <p>Partner is on the way to pickup</p>
+                            <h4>Heading to Pickup</h4>
+                            <p>On the way to collect</p>
                         </div>
                     </div>
                     <div class="timeline-step" id="step-3">
@@ -188,43 +354,103 @@
                         <div class="step-indicator">✅</div>
                         <div class="step-content">
                             <h4>Delivered!</h4>
-                            <p>Share OTP to receive</p>
+                            <p>Share OTP to confirm</p>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
 
         <!-- ═══════════════════════════════════════
-             🎒 PARTNER UI
+             🎒 CARRIER ACTIVE ORDER
              ═══════════════════════════════════════ -->
-        <main id="partner-ui" class="ui-layer hidden-mode">
+        <section id="carrier-active-view" class="view">
+            <div class="view-header">
+                <button class="back-btn" id="carrier-active-back">← Feed</button>
+                <h3>Active Delivery</h3>
+            </div>
 
-            <div class="partner-dashboard">
-                <div class="dash-header">
-                    <h3>🔴 Live Requests</h3>
-                    <span class="online-badge">Online</span>
+            <div id="carrier-active-content" class="carrier-active-content">
+                <!-- Filled dynamically -->
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════
+             📋 MY REQUESTS (History)
+             ═══════════════════════════════════════ -->
+        <section id="history-view" class="view">
+            <div class="view-header">
+                <button class="back-btn" id="history-back">← Back</button>
+                <h3>My Requests</h3>
+            </div>
+            <div id="history-list" class="history-list">
+                <div class="empty-state">
+                    <span class="empty-icon">📋</span>
+                    <p>No requests yet.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════
+             👥 TRUSTED CIRCLE MODAL
+             ═══════════════════════════════════════ -->
+        <div id="friends-modal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>👥 Trusted Circle</h3>
+                    <button class="modal-close" id="friends-modal-close">✕</button>
                 </div>
 
-                <div id="requests-list" class="requests-container">
-                    <div class="empty-state">
-                        <p>No active requests nearby.</p>
-                        <small>Wait for a notification...</small>
+                <div class="modal-tabs">
+                    <button class="modal-tab active" data-tab="search" id="friends-tab-search">Search</button>
+                    <button class="modal-tab" data-tab="pending" id="friends-tab-pending">
+                        Pending <span class="badge" id="pending-count" style="display:none;">0</span>
+                    </button>
+                    <button class="modal-tab" data-tab="friends" id="friends-tab-friends">Friends</button>
+                </div>
+
+                <!-- Search Tab -->
+                <div class="modal-tab-content active" id="friends-search-panel">
+                    <div class="search-box">
+                        <input type="text" class="form-input" id="friend-search-input"
+                            placeholder="Search by username or name..." autocomplete="off">
+                    </div>
+                    <div id="search-results" class="friend-list">
+                        <div class="empty-state small">
+                            <p>Search for users to add to your circle.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Tab -->
+                <div class="modal-tab-content" id="friends-pending-panel">
+                    <div id="pending-list" class="friend-list">
+                        <div class="empty-state small">
+                            <p>No pending requests.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Friends Tab -->
+                <div class="modal-tab-content" id="friends-friends-panel">
+                    <div id="friends-list" class="friend-list">
+                        <div class="empty-state small">
+                            <p>No friends yet. Start by searching!</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </main>
+        </div>
 
         <!-- ═══════════════════════════════════════
              🔐 OTP VERIFICATION MODAL
              ═══════════════════════════════════════ -->
-        <div id="otp-modal" class="otp-modal-overlay">
-            <div class="otp-modal">
-                <button class="otp-modal-close" id="otp-close-btn">✕</button>
+        <div id="otp-modal" class="modal-overlay">
+            <div class="modal-card otp-modal-card">
+                <button class="modal-close" id="otp-close-btn">✕</button>
                 <div class="otp-modal-icon">🔐</div>
                 <h3>Enter Delivery OTP</h3>
-                <p>Ask the customer for their 4-digit OTP to confirm delivery</p>
+                <p>Ask the sender for their 4-digit OTP to confirm delivery</p>
 
                 <div class="otp-input-row">
                     <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric"
@@ -239,28 +465,26 @@
 
                 <div id="otp-error" class="otp-error"></div>
 
-                <button class="primary-btn otp-submit-btn" id="otp-verify-btn">
-                    Verify OTP <span class="arrow">→</span>
+                <button class="primary-btn" id="otp-verify-btn">
+                    Verify OTP →
                 </button>
             </div>
         </div>
 
-        <!-- Toast Notification -->
-        <div id="toast" class="toast">Message Here</div>
+        <!-- Toast -->
+        <div id="toast" class="toast hidden">Message</div>
 
         <!-- Watermark -->
-        <div class="watermark">Built by Yuvraj Chopra</div>
+        <div class="watermark">Built by Team Cheese Wali Maggie</div>
     </div>
 
     <!-- ═══════════════════════════════════════════
          📜 SCRIPTS
          ═══════════════════════════════════════════ -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/supabase-init.js"></script>
-    <script src="js/location.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
     <script src="js/map.js"></script>

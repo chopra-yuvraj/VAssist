@@ -261,14 +261,30 @@
         </div>
     </div>
 
-    <div class="watermark">Built by Yuvraj Chopra</div>
+    <div class="watermark">Built by Team Cheese Wali Maggie</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    <script src="js/supabase-init.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const container = document.getElementById('history-list');
             const countEl = document.getElementById('history-count');
-            const history = JSON.parse(localStorage.getItem(CONFIG.KEYS.HISTORY) || '[]');
+
+            // Show loading state
+            container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">Loading history...</div>';
+
+            // Wait for Supabase to be ready
+            if (!window.sb) {
+                console.error('Supabase not initialized');
+                container.innerHTML = '<div style="text-align:center;">Error loading database.</div>';
+                return;
+            }
+
+            // Fetch from API
+            const history = await API.getRequestsByUser();
 
             countEl.textContent = history.length;
 
@@ -289,11 +305,16 @@
             container.innerHTML = history.map((order, i) => {
                 const statusClass = (order.status || 'DELIVERED').toLowerCase();
                 const time = order.created_at ? new Date(order.created_at).toLocaleString() : 'Unknown';
+
+                // Format fare
+                let displayFare = order.fare;
+                if (!displayFare.toString().includes('₹')) displayFare = '₹' + displayFare;
+
                 return `
-                <div class="order-card status-${order.status || 'DELIVERED'}" style="animation-delay: ${i * 0.08}s">
+                <div class="order-card status-${order.status || 'DELIVERED'}" style="animation: card-slide-up 0.5s ease backwards ${i * 0.1}s">
                     <div class="order-item">
                         <span>📦 ${order.item || 'Item'}</span>
-                        <span class="order-fare">₹${order.fare || '0'}</span>
+                        <span class="order-fare">${displayFare}</span>
                     </div>
                     <div class="order-route">
                         <strong>From:</strong> ${order.pickup || 'Unknown'}<br>

@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>VAssist | Login — Campus Delivery</title>
+    <title>VAssist | Login — Your Trusted Courier Network</title>
     <meta name="theme-color" content="#4A4BAF">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -20,6 +21,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .auth-bg-orbs {
@@ -34,13 +36,13 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
-            opacity: 0.2;
+            opacity: 0.15;
         }
 
         .auth-orb-1 {
             width: 400px;
             height: 400px;
-            background: #ECA526;
+            background: #6566C9;
             top: -150px;
             right: -100px;
             animation: orb-float 18s ease-in-out infinite;
@@ -49,7 +51,7 @@
         .auth-orb-2 {
             width: 350px;
             height: 350px;
-            background: #E5546B;
+            background: #4A4BAF;
             bottom: -120px;
             left: -80px;
             animation: orb-float 22s ease-in-out infinite reverse;
@@ -58,21 +60,11 @@
         .auth-orb-3 {
             width: 300px;
             height: 300px;
-            background: #4A4BAF;
+            background: #3A3B8F;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             animation: orb-float 25s ease-in-out infinite;
-            animation-delay: -8s;
-        }
-
-        .auth-particles {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            background: radial-gradient(2px 2px at 10% 20%, rgba(236, 165, 38, 0.4), transparent), radial-gradient(2px 2px at 30% 70%, rgba(255, 255, 255, 0.2), transparent), radial-gradient(2px 2px at 50% 30%, rgba(229, 84, 107, 0.3), transparent), radial-gradient(2px 2px at 70% 80%, rgba(255, 255, 255, 0.15), transparent), radial-gradient(2px 2px at 90% 40%, rgba(74, 75, 175, 0.3), transparent);
-            animation: sparkle-drift 10s ease-in-out infinite;
         }
 
         .auth-container {
@@ -81,19 +73,20 @@
             width: 100%;
             max-width: 440px;
             padding: 20px;
-            animation: card-slide-up 0.8s var(--ease-spring) both;
+            animation: card-slide-up 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
 
         .auth-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-radius: var(--radius-xl);
+            border-radius: 24px;
             padding: 40px 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 40px rgba(74, 75, 175, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            color: white;
         }
 
         .auth-card::before {
@@ -102,8 +95,8 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #4A4BAF, #ECA526, #E5546B, #4A4BAF);
+            height: 3px;
+            background: linear-gradient(90deg, #4A4BAF, #6566C9, #4A4BAF);
             background-size: 300% auto;
             animation: gradient-shift 4s ease-in-out infinite;
         }
@@ -113,21 +106,18 @@
             margin-bottom: 28px;
         }
 
-        .auth-logo img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(74, 75, 175, 0.2);
-            box-shadow: 0 0 30px rgba(236, 165, 38, 0.2), 0 8px 24px rgba(0, 0, 0, 0.1);
-            animation: logo-pulse 2.5s ease-in-out infinite;
+        .auth-logo .shield-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 12px rgba(74, 75, 175, 0.4));
         }
 
         .auth-logo h1 {
             font-size: 1.8rem;
             font-weight: 800;
-            margin-top: 12px;
-            background: linear-gradient(135deg, #4A4BAF, #ECA526);
+            margin-top: 8px;
+            background: linear-gradient(135deg, #fff, #c4c0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -136,14 +126,14 @@
 
         .auth-logo p {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.5);
             margin-top: 4px;
         }
 
         .auth-tabs {
             display: flex;
-            background: rgba(0, 0, 0, 0.04);
-            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 9999px;
             padding: 4px;
             margin-bottom: 28px;
         }
@@ -154,21 +144,19 @@
             text-align: center;
             border: none;
             background: none;
-            font-family: var(--font-main);
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.4);
             cursor: pointer;
-            border-radius: var(--radius-full);
-            transition: all 0.3s var(--ease-spring);
-            position: relative;
-            z-index: 2;
+            border-radius: 9999px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .auth-tab.active {
             color: white;
-            background: var(--primary-gradient);
-            box-shadow: 0 4px 16px var(--primary-glow);
+            background: linear-gradient(135deg, #4A4BAF, #6566C9);
+            box-shadow: 0 4px 16px rgba(74, 75, 175, 0.4);
         }
 
         .auth-form {
@@ -177,7 +165,7 @@
 
         .auth-form.active {
             display: block;
-            animation: stagger-fade-in 0.4s var(--ease-spring) both;
+            animation: stagger-fade-in 0.4s ease both;
         }
 
         .form-group {
@@ -186,43 +174,44 @@
 
         .form-group label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.6);
             margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .form-input {
             width: 100%;
             padding: 14px 18px;
-            border: 2px solid rgba(0, 0, 0, 0.08);
-            border-radius: var(--radius-md);
-            font-family: var(--font-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
-            color: var(--text-primary);
-            background: var(--surface-hover);
-            transition: all 0.3s var(--ease-spring);
+            color: white;
+            background: rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
             outline: none;
             box-sizing: border-box;
         }
 
         .form-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-glow), 0 0 20px rgba(236, 165, 38, 0.08);
-            transform: translateY(-1px);
-            background: white;
+            border-color: #6566C9;
+            box-shadow: 0 0 0 3px rgba(101, 102, 201, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .form-input::placeholder {
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.25);
         }
 
         .form-error {
-            font-size: 0.8rem;
-            color: var(--accent-red);
+            font-size: 0.78rem;
+            color: #ff6b6b;
             margin-top: 6px;
-            font-weight: 600;
-            min-height: 20px;
+            font-weight: 500;
+            min-height: 18px;
             display: block;
         }
 
@@ -230,27 +219,25 @@
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: var(--radius-md);
-            font-family: var(--font-main);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s var(--ease-spring);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
         .auth-btn-primary {
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
+            background: linear-gradient(135deg, #4A4BAF, #6566C9);
             color: white;
-            box-shadow: 0 4px 16px var(--primary-glow);
-            animation: gradient-shift 4s ease-in-out infinite;
+            box-shadow: 0 4px 16px rgba(74, 75, 175, 0.4);
         }
 
         .auth-btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px rgba(236, 165, 38, 0.2);
+            box-shadow: 0 8px 30px rgba(74, 75, 175, 0.5);
         }
 
         .auth-btn-primary:active {
@@ -258,9 +245,8 @@
         }
 
         .auth-btn-primary:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            animation: none;
         }
 
         .auth-divider {
@@ -268,8 +254,8 @@
             align-items: center;
             gap: 16px;
             margin: 24px 0;
-            color: var(--text-muted);
-            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
         }
 
         .auth-divider::before,
@@ -277,13 +263,13 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         }
 
         .google-btn {
-            background: white;
-            color: var(--text-primary);
-            border: 2px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -291,8 +277,8 @@
         }
 
         .google-btn:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 16px rgba(74, 75, 175, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
             transform: translateY(-2px);
         }
 
@@ -301,30 +287,30 @@
             height: 20px;
         }
 
-        .domain-notice {
+        .trust-notice {
             text-align: center;
             margin-top: 20px;
-            padding: 12px;
-            background: linear-gradient(135deg, rgba(74, 75, 175, 0.06), rgba(236, 165, 38, 0.04));
-            border-radius: var(--radius-sm);
+            padding: 14px;
+            background: rgba(101, 102, 201, 0.1);
+            border-radius: 12px;
             font-size: 0.8rem;
-            color: var(--text-secondary);
-            border: 1px solid rgba(74, 75, 175, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(101, 102, 201, 0.15);
         }
 
-        .domain-notice strong {
-            color: var(--primary);
+        .trust-notice strong {
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .auth-footer {
             text-align: center;
             margin-top: 20px;
-            font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
         }
 
         .auth-footer a {
-            color: rgba(236, 165, 38, 0.7);
+            color: rgba(101, 102, 201, 0.8);
             text-decoration: none;
         }
 
@@ -333,18 +319,18 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
-            background: var(--dark-glass);
+            background: rgba(20, 20, 40, 0.9);
             backdrop-filter: blur(16px);
             color: white;
             padding: 13px 28px;
-            border-radius: var(--radius-full);
+            border-radius: 9999px;
             font-size: 0.9rem;
             font-weight: 600;
             z-index: 3000;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             opacity: 0;
             pointer-events: none;
-            transition: all 0.4s var(--ease-spring);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             white-space: nowrap;
         }
 
@@ -353,15 +339,62 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes card-slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes stagger-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes orb-float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(30px, -30px);
+            }
+
+            66% {
+                transform: translate(-20px, 20px);
+            }
+        }
+
         @media (max-width: 420px) {
             .auth-card {
                 padding: 28px 20px;
-                border-radius: var(--radius-lg);
-            }
-
-            .auth-logo img {
-                width: 70px;
-                height: 70px;
+                border-radius: 20px;
             }
 
             .auth-logo h1 {
@@ -377,25 +410,24 @@
         <div class="auth-orb auth-orb-2"></div>
         <div class="auth-orb auth-orb-3"></div>
     </div>
-    <div class="auth-particles"></div>
 
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
-                <img src="assets/logo.png" alt="VAssist Logo">
+                <span class="shield-icon">🛡️</span>
                 <h1>VAssist</h1>
-                <p>Campus Delivery Network</p>
+                <p>Your Trusted Courier Network</p>
             </div>
 
             <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login" id="tab-login">Login</button>
-                <button class="auth-tab" data-tab="register" id="tab-register">Register</button>
+                <button class="auth-tab active" data-tab="login" id="tab-login">Sign In</button>
+                <button class="auth-tab" data-tab="register" id="tab-register">Join</button>
             </div>
 
             <form class="auth-form active" id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" class="form-input" id="login-email" placeholder="you@vitstudent.ac.in" required
+                    <label for="login-email">Email</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="you@email.com" required
                         autocomplete="email">
                     <span class="form-error" id="login-email-error"></span>
                 </div>
@@ -405,19 +437,25 @@
                         required autocomplete="current-password">
                     <span class="form-error" id="login-password-error"></span>
                 </div>
-                <button type="submit" class="auth-btn auth-btn-primary" id="login-submit">Login →</button>
+                <button type="submit" class="auth-btn auth-btn-primary" id="login-submit">Sign In →</button>
             </form>
 
             <form class="auth-form" id="register-form">
                 <div class="form-group">
                     <label for="reg-name">Full Name</label>
-                    <input type="text" class="form-input" id="reg-name" placeholder="Yuvraj Chopra" required
+                    <input type="text" class="form-input" id="reg-name" placeholder="Your name" required
                         autocomplete="name">
                     <span class="form-error" id="reg-name-error"></span>
                 </div>
                 <div class="form-group">
-                    <label for="reg-email">VIT Student Email</label>
-                    <input type="email" class="form-input" id="reg-email" placeholder="you@vitstudent.ac.in" required
+                    <label for="reg-username">Username</label>
+                    <input type="text" class="form-input" id="reg-username" placeholder="Choose a unique username"
+                        required autocomplete="username" pattern="[a-z0-9_]+" minlength="3">
+                    <span class="form-error" id="reg-username-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="you@email.com" required
                         autocomplete="email">
                     <span class="form-error" id="reg-email-error"></span>
                 </div>
@@ -452,13 +490,14 @@
                 Sign in with Google
             </button>
 
-            <div class="domain-notice">
-                🎓 Only <strong>@vitstudent.ac.in</strong> email addresses can register
+            <div class="trust-notice">
+                🛡️ <strong>Trust through connections.</strong><br>
+                Add friends after signup to see their delivery requests.
             </div>
         </div>
 
         <div class="auth-footer">
-            &copy; 2026 VAssist — <a href="index.html">Back to App</a>
+            &copy; 2026 VAssist — Built by Team Cheese Wali Maggie
         </div>
     </div>
 
@@ -470,11 +509,10 @@
     <script src="js/supabase-init.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const ALLOWED_DOMAIN = '@vitstudent.ac.in';
             const sb = window.sb;
 
             // Already logged in? Go to app
-            const saved = localStorage.getItem('vassist_user');
+            const saved = localStorage.getItem(CONFIG.KEYS.USER);
             if (saved) { window.location.href = 'index.html'; return; }
 
             // Tab switching
@@ -486,22 +524,36 @@
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    if (tab.dataset.tab === 'login') { loginForm.classList.add('active'); registerForm.classList.remove('active'); }
-                    else { registerForm.classList.add('active'); loginForm.classList.remove('active'); }
+                    if (tab.dataset.tab === 'login') {
+                        loginForm.classList.add('active');
+                        registerForm.classList.remove('active');
+                    } else {
+                        registerForm.classList.add('active');
+                        loginForm.classList.remove('active');
+                    }
                     clearErrors();
                 });
             });
 
-            function clearErrors() { document.querySelectorAll('.form-error').forEach(e => e.textContent = ''); }
-            function showToast(msg) { const t = document.getElementById('auth-toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500); }
-            function isValidDomain(email) { return email.toLowerCase().endsWith(ALLOWED_DOMAIN); }
+            function clearErrors() {
+                document.querySelectorAll('.form-error').forEach(e => e.textContent = '');
+            }
+
+            function showToast(msg) {
+                const t = document.getElementById('auth-toast');
+                t.textContent = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3500);
+            }
 
             function saveUser(user) {
-                localStorage.setItem('vassist_user', JSON.stringify({
+                localStorage.setItem(CONFIG.KEYS.USER, JSON.stringify({
                     uid: user.id || user.uid || 'local',
                     email: user.email,
-                    name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0],
-                    photoURL: user.user_metadata?.avatar_url || null,
+                    username: user.user_metadata?.username || user.email.split('@')[0],
+                    name: user.user_metadata?.full_name || user.email.split('@')[0],
+                    avatar_url: user.user_metadata?.avatar_url || null,
+                    trust_score: 0,
                     loginAt: Date.now()
                 }));
             }
@@ -511,19 +563,20 @@
                 e.preventDefault(); clearErrors();
                 const email = document.getElementById('login-email').value.trim();
                 const password = document.getElementById('login-password').value;
+
                 if (!email) { document.getElementById('login-email-error').textContent = 'Email is required'; return; }
                 if (!password) { document.getElementById('login-password-error').textContent = 'Password is required'; return; }
 
                 const btn = document.getElementById('login-submit');
-                btn.disabled = true; btn.textContent = 'Logging in...';
+                btn.disabled = true; btn.textContent = 'Signing in...';
 
                 const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) {
                     document.getElementById('login-password-error').textContent = error.message;
-                    btn.disabled = false; btn.textContent = 'Login →'; return;
+                    btn.disabled = false; btn.textContent = 'Sign In →'; return;
                 }
                 saveUser(data.user);
-                showToast('✅ Login successful!');
+                showToast('✅ Welcome back!');
                 setTimeout(() => window.location.href = 'index.html', 800);
             });
 
@@ -531,13 +584,21 @@
             registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault(); clearErrors();
                 const name = document.getElementById('reg-name').value.trim();
+                const username = document.getElementById('reg-username').value.trim().toLowerCase();
                 const email = document.getElementById('reg-email').value.trim();
                 const password = document.getElementById('reg-password').value;
                 const confirm = document.getElementById('reg-confirm').value;
 
                 if (!name) { document.getElementById('reg-name-error').textContent = 'Name is required'; return; }
+                if (!username || username.length < 3) {
+                    document.getElementById('reg-username-error').textContent = 'Username must be at least 3 characters';
+                    return;
+                }
+                if (!/^[a-z0-9_]+$/.test(username)) {
+                    document.getElementById('reg-username-error').textContent = 'Only lowercase letters, numbers, and underscores';
+                    return;
+                }
                 if (!email) { document.getElementById('reg-email-error').textContent = 'Email is required'; return; }
-                if (!isValidDomain(email)) { document.getElementById('reg-email-error').textContent = '❌ Only @vitstudent.ac.in emails can register'; return; }
                 if (password.length < 6) { document.getElementById('reg-password-error').textContent = 'Min 6 characters'; return; }
                 if (password !== confirm) { document.getElementById('reg-confirm-error').textContent = 'Passwords do not match'; return; }
 
@@ -546,38 +607,51 @@
 
                 const { data, error } = await sb.auth.signUp({
                     email, password,
-                    options: { data: { full_name: name } }
+                    options: {
+                        data: {
+                            full_name: name,
+                            username: username
+                        }
+                    }
                 });
+
                 if (error) {
                     document.getElementById('reg-email-error').textContent = error.message;
                     btn.disabled = false; btn.textContent = 'Create Account →'; return;
                 }
+
+                // Update the auto-created profile with the chosen username
+                if (data.user) {
+                    try {
+                        const sbClient = window.sb;
+                        await sbClient.from('profiles').update({
+                            username: username,
+                            full_name: name
+                        }).eq('id', data.user.id);
+                    } catch (e) {
+                        console.warn('Profile username update deferred:', e);
+                    }
+                }
+
                 saveUser(data.user);
-                showToast('🎉 Account created! Check email to verify.');
-                setTimeout(() => window.location.href = 'index.html', 1200);
+                showToast('🎉 Account created!');
+                setTimeout(() => window.location.href = 'index.html', 1000);
             });
 
-            // ── Google Sign-In (via Supabase OAuth) ──
+            // ── Google Sign-In ──
             document.getElementById('google-signin-btn').addEventListener('click', async () => {
                 const { data, error } = await sb.auth.signInWithOAuth({
                     provider: 'google',
                     options: { redirectTo: window.location.origin + '/index.html' }
                 });
                 if (error) showToast('⚠️ ' + error.message);
-                // After OAuth redirect, Supabase will handle the session — we catch it on index.html load
             });
 
             // ── Check if returning from OAuth redirect ──
             (async () => {
                 const { data: { session } } = await sb.auth.getSession();
                 if (session) {
-                    const user = session.user;
-                    if (!isValidDomain(user.email)) {
-                        await sb.auth.signOut();
-                        showToast('❌ Only @vitstudent.ac.in accounts allowed');
-                        return;
-                    }
-                    saveUser(user);
+                    saveUser(session.user);
                     window.location.href = 'index.html';
                 }
             })();

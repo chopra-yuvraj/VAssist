@@ -1,20 +1,14 @@
 /* ============================================
-   VAssist — Utilities, Pricing & Animation Helpers
+   VAssist v5.0 — Utilities & Helpers
+   Pricing, animations, toast, formatters
    ============================================ */
 
-// ── Pricing Engine ──
+// ── Pricing Engine (weight-based) ──
 const Pricing = {
-    estimate: (distKm, type) => {
-        const pricing = type === 'cyclist' ? CONFIG.PRICING.CYCLIST : CONFIG.PRICING.WALKER;
-        const raw = pricing.BASE + (distKm * pricing.PER_KM);
-
-        // Surge pricing check
-        const settings = Utils.getSettings();
-        let multiplier = 1;
-        if (settings.surge) multiplier += 0.3;
-        if (settings.rain) multiplier += 0.2;
-
-        return Math.round(raw * multiplier);
+    estimate: (distKm, type, weightKg = 0.5) => {
+        const p = type === 'cyclist' ? CONFIG.PRICING.CYCLIST : CONFIG.PRICING.WALKER;
+        const raw = p.BASE + (distKm * p.PER_KM) + (weightKg * p.PER_KG);
+        return Math.round(raw);
     }
 };
 
@@ -26,25 +20,17 @@ const Utils = {
 
     generateOTP: () => Math.floor(1000 + Math.random() * 9000),
 
-    getSettings: () => JSON.parse(localStorage.getItem(CONFIG.KEYS.SETTINGS)) || { surge: false, rain: false },
+    getSettings: () => JSON.parse(localStorage.getItem(CONFIG.KEYS.SETTINGS)) || {},
 
-    saveRide: (ride) => {
-        const rides = JSON.parse(localStorage.getItem(CONFIG.KEYS.HISTORY) || '[]');
-        rides.unshift(ride);
-        if (rides.length > 50) rides.length = 50; // Cap history
-        localStorage.setItem(CONFIG.KEYS.HISTORY, JSON.stringify(rides));
-    },
-
-    // ── Enhanced Toast ──
+    // ── Toast Notification ──
     showToast: (msg, duration = 3000) => {
         const t = document.getElementById('toast');
+        if (!t) return;
         t.innerText = msg;
         t.classList.add('show');
         t.classList.remove('hidden');
 
-        // Clear any existing timeout
         if (Utils._toastTimer) clearTimeout(Utils._toastTimer);
-
         Utils._toastTimer = setTimeout(() => {
             t.classList.remove('show');
             setTimeout(() => t.classList.add('hidden'), 400);
@@ -75,6 +61,7 @@ const Utils = {
 
     // ── Smooth Number Counter ──
     animateNumber: (element, target, duration = 600) => {
+        if (!element) return;
         const start = parseInt(element.innerText) || 0;
         const diff = target - start;
         const startTime = performance.now();
@@ -82,7 +69,6 @@ const Utils = {
         const step = (now) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             element.innerText = Math.round(start + diff * eased);
             if (progress < 1) requestAnimationFrame(step);
@@ -90,8 +76,9 @@ const Utils = {
         requestAnimationFrame(step);
     },
 
-    // ── Ripple Effect Creator ──
+    // ── Ripple Effect ──
     createRipple: (event, element) => {
+        if (!element) return;
         const circle = document.createElement('span');
         const diameter = Math.max(element.clientWidth, element.clientHeight);
         const radius = diameter / 2;
@@ -102,15 +89,14 @@ const Utils = {
         circle.style.top = `${event.clientY - rect.top - radius}px`;
         circle.classList.add('ripple');
 
-        // Remove old ripples
-        const existingRipple = element.querySelector('.ripple');
-        if (existingRipple) existingRipple.remove();
+        const existing = element.querySelector('.ripple');
+        if (existing) existing.remove();
 
         element.appendChild(circle);
         setTimeout(() => circle.remove(), 600);
     },
 
-    // ── Confetti Celebration ──
+    // ── Confetti ──
     launchConfetti: (count = 40) => {
         const container = document.createElement('div');
         container.className = 'confetti-container';
@@ -130,52 +116,58 @@ const Utils = {
             piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
             container.appendChild(piece);
         }
-
         setTimeout(() => container.remove(), 4000);
     },
 
-    // ── Lerp (Linear Interpolation) ──
-    lerp: (a, b, t) => a + (b - a) * t,
-
-    // ── Easing Functions ──
-    easeOutCubic: (t) => 1 - Math.pow(1 - t, 3),
-    easeInOutQuad: (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
-    easeOutElastic: (t) => {
-        const c4 = (2 * Math.PI) / 3;
-        return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    // ── Handshake Animation ──
+    showHandshake: () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'handshake-overlay';
+        overlay.innerHTML = `
+            <div class="handshake-animation">
+                <span class="handshake-emoji">🤝</span>
+                <p class="handshake-text">Connection Made!</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('show'));
+        setTimeout(() => {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.remove(), 500);
+        }, 2000);
     },
 
-    // ── Random Between ──
+    // ── Math Helpers ──
+    lerp: (a, b, t) => a + (b - a) * t,
+    easeOutCubic: (t) => 1 - Math.pow(1 - t, 3),
+    easeInOutQuad: (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
     randomBetween: (min, max) => Math.random() * (max - min) + min,
 
-    // ── Haptic Feedback (if supported) ──
+    // ── Haptic Feedback ──
     vibrate: (pattern = 50) => {
         if ('vibrate' in navigator) navigator.vibrate(pattern);
     },
 
-    // ── Format Time ──
-    formatTime: (ms) => {
-        const minutes = Math.floor(ms / 60000);
-        const seconds = Math.floor((ms % 60000) / 1000);
-        return `${minutes}m ${seconds}s`;
-    },
-
-    // ── Time Ago (for partner dashboard) ──
+    // ── Time Ago ──
     timeAgo: (val) => {
         const now = Date.now();
         let then;
-        if (val && typeof val.toDate === 'function') {
-            then = val.toDate().getTime(); // Firestore Timestamp
-        } else if (typeof val === 'number') {
-            then = val; // milliseconds
-        } else {
-            then = new Date(val).getTime(); // date string
-        }
+        if (typeof val === 'number') then = val;
+        else then = new Date(val).getTime();
         const diff = Math.max(0, now - then);
         const mins = Math.floor(diff / 60000);
         if (mins < 1) return 'Just now';
         if (mins < 60) return `${mins}m ago`;
         const hrs = Math.floor(mins / 60);
-        return `${hrs}h ago`;
+        if (hrs < 24) return `${hrs}h ago`;
+        const days = Math.floor(hrs / 24);
+        return `${days}d ago`;
+    },
+
+    // ── Escape HTML ──
+    escapeHtml: (str) => {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
     }
 };
